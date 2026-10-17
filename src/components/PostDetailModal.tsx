@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MetaPost, MetaComment } from '../types';
+import { MetaPost, MetaComment, MetaPageInfo } from '../types';
 import { fetchPostComments, addTestComment, analyze_single_post_comments_ai, resolveCommentAuthorName } from '../services/metaSyncService';
 import {
   X,
@@ -21,6 +21,7 @@ import {
   TrendingUp,
   AlertTriangle,
   Database,
+  BadgeCheck,
 } from 'lucide-react';
 
 interface PostDetailModalProps {
@@ -32,6 +33,8 @@ interface PostDetailModalProps {
   onPostUpdated?: () => Promise<void>;
   onRefreshPostDb?: (post: MetaPost) => Promise<void> | void;
   isRefreshingDb?: boolean;
+  pageInfo?: MetaPageInfo | null;
+  companyName?: string;
 }
 
 // Funciones helper para renderizar los 3 niveles obligatorios de IA en MAYÚSCULAS
@@ -176,6 +179,8 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
   onPostUpdated,
   onRefreshPostDb,
   isRefreshingDb = false,
+  pageInfo,
+  companyName,
 }) => {
   const [comments, setComments] = useState<MetaComment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -425,8 +430,62 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
             </div>
           )}
           {/* Post Message & Details */}
-          <div className="p-4 rounded-xl bg-stone-50 border border-stone-200">
-            <p className="text-stone-900 text-sm sm:text-base leading-relaxed whitespace-pre-line mb-3 font-normal">
+          <div className="p-4 sm:p-5 rounded-xl bg-stone-50 border border-stone-200 space-y-3.5">
+            {/* Cabecera del Autor de la Publicación (Página de Facebook / Empresa) */}
+            <div className="flex items-center justify-between pb-3 border-b border-stone-200/90 gap-3">
+              <div className="flex items-center gap-3">
+                {post.raw_data?.from?.picture?.data?.url || pageInfo?.picture ? (
+                  <img
+                    src={post.raw_data?.from?.picture?.data?.url || pageInfo?.picture}
+                    alt={post.raw_data?.from?.name || pageInfo?.name || 'Autor'}
+                    className="w-10 h-10 rounded-full object-cover border border-stone-300 shadow-2xs shrink-0"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-bold text-sm flex items-center justify-center shadow-2xs shrink-0">
+                    {(post.raw_data?.from?.name || pageInfo?.name || companyName || 'F').charAt(0).toUpperCase()}
+                  </div>
+                )}
+
+                <div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-bold text-stone-900 text-sm">
+                      {post.raw_data?.from?.name || pageInfo?.name || companyName || 'Página de Facebook'}
+                    </span>
+                    {(pageInfo?.verification_status === 'blue_verified' || pageInfo?.verification_status === 'verified') && (
+                      <span title="Página Verificada">
+                        <BadgeCheck className="w-4 h-4 text-blue-600 shrink-0" />
+                      </span>
+                    )}
+                    {pageInfo?.username && (
+                      <span className="text-xs text-stone-500 font-normal">@{pageInfo.username}</span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 text-[11px] text-stone-500 mt-0.5">
+                    <span className="inline-flex items-center gap-1 text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded font-medium border border-blue-200/60">
+                      <Facebook className="w-2.5 h-2.5 text-blue-600" /> Publicación oficial
+                    </span>
+                    <span>•</span>
+                    <span>{formatDate(post.created_time)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {post.permalink_url && (
+                <a
+                  href={post.permalink_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 text-xs font-semibold text-indigo-700 bg-white hover:bg-indigo-50 rounded-lg border border-indigo-200 flex items-center gap-1.5 transition-colors shadow-2xs shrink-0"
+                  title="Abrir publicación en Facebook"
+                >
+                  <span className="hidden sm:inline">Ver en Facebook</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-indigo-600" />
+                </a>
+              )}
+            </div>
+
+            <p className="text-stone-900 text-sm sm:text-base leading-relaxed whitespace-pre-line font-normal">
               {post.message || <span className="italic text-stone-400">Sin texto descriptivo</span>}
             </p>
 
@@ -446,16 +505,6 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                   <RefreshCw className="w-3 h-3" />
                   Última sinc.: {formatDate(post.last_comment_sync_at)}
                 </span>
-              )}
-              {post.permalink_url && (
-                <a
-                  href={post.permalink_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-indigo-600 hover:underline flex items-center gap-1 ml-auto"
-                >
-                  Ver en Facebook <ExternalLink className="w-3 h-3" />
-                </a>
               )}
             </div>
           </div>

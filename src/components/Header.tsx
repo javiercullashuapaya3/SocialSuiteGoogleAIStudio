@@ -64,20 +64,20 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Platform Branding: Social Suite & Promptia.lat + Tenant company */}
-          <div className="flex items-center gap-3 sm:gap-4">
+      <div className="w-full max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between min-h-[4.75rem] py-2.5 gap-3">
+          {/* Platform Branding: Social Suite por Promptia.lat + Datos Empresa Cliente */}
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             {/* Social Suite platform brand by Promptia.lat */}
             <div className="flex items-center gap-2.5 pr-3 sm:pr-4 border-r border-stone-200 shrink-0">
               <a
                 href="https://promptia.lat"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-2"
+                className="group flex items-center gap-2.5"
                 title="Promptia.lat - Creador de Social Suite"
               >
-                <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center p-1 shadow-xs border border-stone-800 transition-transform group-hover:scale-105">
+                <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center p-1.5 shadow-xs border border-stone-800 transition-transform group-hover:scale-105 shrink-0">
                   <img
                     src="/promptia_logo.png"
                     alt="Promptia.lat Logo"
@@ -90,116 +90,108 @@ export const Header: React.FC<HeaderProps> = ({
                       Social Suite
                     </span>
                   </div>
-                  <span className="text-[10px] text-stone-600 font-semibold block leading-tight">
-                    by Promptia.lat
+                  <span className="text-[10px] text-indigo-600 font-bold block leading-tight mt-0.5">
+                    por Promptia.lat
                   </span>
                 </div>
               </a>
             </div>
 
-            {/* Tenant company indicator and switcher */}
-            <div className="flex items-center gap-2.5">
+            {/* Ficha Destacada: Datos de la Empresa Cliente */}
+            <div className="flex items-center gap-3 bg-stone-50/90 hover:bg-stone-100/70 border border-stone-200/90 rounded-xl px-3 py-1.5 transition-colors">
               {company?.logo ? (
                 <img
                   src={company.logo}
                   alt={company.name}
-                  className="w-8 h-8 rounded-lg object-cover border border-stone-200"
+                  className="w-9 h-9 rounded-lg object-cover border border-stone-200 shadow-2xs shrink-0"
                   onError={(e) => {
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                 />
               ) : (
-                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                  {company?.name ? company.name.charAt(0).toUpperCase() : 'M'}
+                <div className="w-9 h-9 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-xs shrink-0">
+                  {company?.name ? company.name.charAt(0).toUpperCase() : 'C'}
                 </div>
               )}
 
-              <div>
-              <div className="flex items-center gap-2">
-                {companiesList && companiesList.length > 1 ? (
-                  <select
-                    value={company?.client_id || 1}
-                    onChange={(e) => selectCompany?.(Number(e.target.value))}
-                    className="font-semibold text-stone-900 text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-lg px-2 py-0.5 focus:ring-2 focus:ring-indigo-500 cursor-pointer max-w-[170px] sm:max-w-xs truncate"
-                    title="Cambiar empresa activa"
-                  >
-                    {companiesList.map((c) => (
-                      <option key={c.id} value={c.client_id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <span className="font-semibold text-stone-900 text-sm sm:text-base tracking-tight truncate max-w-[140px] sm:max-w-xs">
-                    {company?.name || 'Mi Empresa'}
+              <div className="flex flex-col justify-center min-w-0">
+                {/* Fila 1: Empresa Cliente y Selector */}
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="text-[10px] font-bold text-stone-600 uppercase tracking-wider hidden sm:inline shrink-0">
+                    Cliente:
                   </span>
-                )}
-                {isDemoMode && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1">
-                    <Radio className="w-2.5 h-2.5 text-amber-600 animate-pulse" /> Demo
+                  {companiesList && companiesList.length > 1 ? (
+                    <select
+                      value={company?.client_id || 1}
+                      onChange={(e) => selectCompany?.(Number(e.target.value))}
+                      className="font-bold text-stone-900 text-xs sm:text-sm bg-white border border-stone-300 rounded-md px-2 py-0.5 shadow-2xs focus:ring-2 focus:ring-indigo-500 cursor-pointer max-w-[150px] sm:max-w-[210px] truncate"
+                      title="Cambiar empresa cliente activa"
+                    >
+                      {companiesList.map((c) => (
+                        <option key={c.id} value={c.client_id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="font-bold text-stone-900 text-xs sm:text-sm tracking-tight truncate max-w-[140px] sm:max-w-[210px]">
+                      {company?.name || 'Mi Empresa'}
+                    </span>
+                  )}
+                  {isDemoMode && (
+                    <span className="px-1.5 py-0.2 rounded-md text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1 shrink-0">
+                      <Radio className="w-2.5 h-2.5 text-amber-600 animate-pulse" /> Demo
+                    </span>
+                  )}
+                </div>
+
+                {/* Fila 2: Usuario y Fan Page de Facebook */}
+                <div className="text-[11px] text-stone-500 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
+                  <span className="whitespace-nowrap">
+                    Usuario: <strong className="text-stone-700 font-semibold">{userName || 'Comercial'}</strong>
                   </span>
-                )}
-              </div>
 
-              <div className="text-xs text-stone-500 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
-                <span>
-                  Usuario: <strong className="text-stone-700 font-medium">{userName || 'Comercial'}</strong>
-                </span>
+                  <span className="text-stone-300 hidden sm:inline">•</span>
 
-                <span className="text-stone-300 hidden sm:inline">•</span>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    {pageInfo?.name ? (
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span
+                          className="inline-flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-semibold text-[11px] border border-blue-200 max-w-[160px] sm:max-w-[220px] truncate"
+                          title={`Página de Facebook: ${pageInfo.name} (ID: ${pageInfo.id})`}
+                        >
+                          <Facebook className="w-3 h-3 text-blue-600 shrink-0" />
+                          <span className="truncate">{pageInfo.name}</span>
+                          {(pageInfo.verification_status === 'blue_verified' || pageInfo.verification_status === 'verified') && (
+                            <span title="Página Verificada">
+                              <BadgeCheck className="w-3 h-3 text-blue-600 shrink-0" />
+                            </span>
+                          )}
+                        </span>
 
-                {/* Mostrar nombre de la página de Facebook al inicio con datos enriquecidos */}
-                <div className="flex items-center gap-1.5">
-                  {pageInfo?.name ? (
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span
-                        className="inline-flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-semibold text-[11px] border border-blue-200 max-w-[200px] sm:max-w-[280px] truncate"
-                        title={`Página de Facebook: ${pageInfo.name} (ID: ${pageInfo.id})${pageInfo.username ? ` • @${pageInfo.username}` : ''}${pageInfo.category ? ` • ${pageInfo.category}` : ''}`}
-                      >
-                        <Facebook className="w-3 h-3 text-blue-600 shrink-0" />
-                        <span className="truncate">{pageInfo.name}</span>
-                        {pageInfo.username && (
-                          <span className="text-blue-500 font-normal">(@{pageInfo.username})</span>
-                        )}
-                        {(pageInfo.verification_status === 'blue_verified' || pageInfo.verification_status === 'verified') && (
-                          <span title="Página Verificada">
-                            <BadgeCheck className="w-3 h-3 text-blue-600 shrink-0" />
+                        {pageInfo.followers_count !== undefined && (
+                          <span
+                            className="hidden xl:inline-flex items-center gap-1 text-[10px] font-medium text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200"
+                            title={`${pageInfo.followers_count.toLocaleString()} seguidores en Facebook`}
+                          >
+                            <Users className="w-2.5 h-2.5 text-stone-400" />
+                            <span>{pageInfo.followers_count.toLocaleString()}</span>
                           </span>
                         )}
+                      </div>
+                    ) : company?.meta_page_id ? (
+                      <span className="inline-flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded font-mono text-[10px] border border-stone-200">
+                        <Facebook className="w-3 h-3 text-blue-600 shrink-0" />
+                        <span>ID: {company.meta_page_id}</span>
                       </span>
-
-                      {pageInfo.followers_count !== undefined && (
-                        <span
-                          className="hidden md:inline-flex items-center gap-1 text-[10px] font-medium text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200"
-                          title={`${pageInfo.followers_count.toLocaleString()} seguidores en Facebook`}
-                        >
-                          <Users className="w-2.5 h-2.5 text-stone-400" />
-                          <span>{pageInfo.followers_count.toLocaleString()}</span>
-                        </span>
-                      )}
-
-                      {pageInfo.category && (
-                        <span
-                          className="hidden lg:inline-flex items-center text-[10px] text-stone-500 bg-stone-50 px-1.5 py-0.5 rounded border border-stone-200 max-w-[130px] truncate"
-                          title={`Categoría: ${pageInfo.category}`}
-                        >
-                          {pageInfo.category}
-                        </span>
-                      )}
-                    </div>
-                  ) : company?.meta_page_id ? (
-                    <span className="inline-flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded font-mono text-[11px] border border-stone-200">
-                      <Facebook className="w-3 h-3 text-blue-600 shrink-0" />
-                      <span>Page ID: {company.meta_page_id}</span>
-                    </span>
-                  ) : (
-                    <span className="text-amber-600 text-[11px] font-medium">Sin página configurada</span>
-                  )}
+                    ) : (
+                      <span className="text-amber-600 text-[10px] font-medium">Sin página Meta</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
           {/* Central Navigation Tabs */}
           {onTabChange && (

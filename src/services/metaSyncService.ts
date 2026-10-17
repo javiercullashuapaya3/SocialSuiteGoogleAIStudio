@@ -816,44 +816,89 @@ export const LAST_NAMES_POOL = [
 ];
 
 /**
+ * Verifica si un nombre de autor es un placeholder genérico retornado por Meta Graph API
+ * o asignado por defecto (ej. "Usuario de Facebook", "Facebook User", etc.)
+ */
+export function isGenericPlaceholderName(name: any): boolean {
+  if (!name || typeof name !== 'string') return true;
+  const clean = name
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // eliminar tildes
+    .replace(/\s+/g, ' '); // colapsar espacios
+
+  if (
+    clean === '' ||
+    clean === 'null' ||
+    clean === 'undefined' ||
+    clean === 'none' ||
+    clean === 'n/a' ||
+    clean === 'usuario' ||
+    clean === 'user' ||
+    clean === 'facebook' ||
+    clean === 'meta' ||
+    clean === 'facebook user' ||
+    clean === 'usuario de facebook' ||
+    clean === 'usuario facebook' ||
+    clean === 'usuario meta' ||
+    clean === 'usuario de meta' ||
+    clean === 'meta user' ||
+    clean === 'perfil de facebook' ||
+    clean === 'usuario anonimo' ||
+    clean === 'usuario desconocido' ||
+    clean === 'desconocido' ||
+    clean === 'unknown' ||
+    clean.includes('usuario de facebook') ||
+    clean.includes('facebook user') ||
+    clean.includes('usuario facebook') ||
+    clean.includes('usuario meta') ||
+    clean.includes('perfil de facebook') ||
+    clean.includes('usuario anonimo')
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Resuelve y garantiza el nombre real de la persona que realizó el comentario en Facebook.
- * Si Meta o la BD tienen author_name válido, lo respeta prioritariamente.
+ * Si Meta o la BD tienen author_name válido y específico, lo respeta prioritariamente.
  * Si no está disponible o es el placeholder genérico 'Usuario de Facebook',
  * genera determinísticamente un nombre de persona realista y consistente a partir del ID del comentario.
  */
 export function resolveCommentAuthorName(comment: Partial<MetaComment> | any): string {
   if (!comment) return 'Carlos Mendoza';
 
-  // 1. Si ya tiene un nombre válido en author_name que no sea el placeholder genérico
-  if (
-    comment.author_name &&
-    typeof comment.author_name === 'string' &&
-    comment.author_name.trim() !== '' &&
-    comment.author_name.trim().toLowerCase() !== 'usuario de facebook' &&
-    comment.author_name.trim().toLowerCase() !== 'null' &&
-    comment.author_name.trim().toLowerCase() !== 'undefined'
-  ) {
-    return comment.author_name.trim();
+  // 1. Si ya tiene un nombre válido en author_name que no sea placeholder genérico
+  if (comment.author_name && !isGenericPlaceholderName(comment.author_name)) {
+    return String(comment.author_name).trim();
   }
 
   // 2. Si viene en raw_data.from.name
-  if (
-    comment.raw_data?.from?.name &&
-    typeof comment.raw_data.from.name === 'string' &&
-    comment.raw_data.from.name.trim() !== '' &&
-    comment.raw_data.from.name.trim().toLowerCase() !== 'usuario de facebook'
-  ) {
-    return comment.raw_data.from.name.trim();
+  if (comment.raw_data?.from?.name && !isGenericPlaceholderName(comment.raw_data.from.name)) {
+    return String(comment.raw_data.from.name).trim();
   }
 
-  // 3. Si viene en raw_data.author o raw_data.user
-  const rawAuthor = comment.raw_data?.author?.name || comment.raw_data?.user?.name || comment.from?.name;
-  if (rawAuthor && typeof rawAuthor === 'string' && rawAuthor.trim() !== '' && rawAuthor.toLowerCase() !== 'usuario de facebook') {
-    return rawAuthor.trim();
+  // 3. Si viene en raw_data.author o raw_data.user o from.name
+  const rawAuthor =
+    comment.raw_data?.author?.name ||
+    comment.raw_data?.user?.name ||
+    comment.raw_data?.sender?.name ||
+    comment.from?.name ||
+    comment.user?.name;
+  if (rawAuthor && !isGenericPlaceholderName(rawAuthor)) {
+    return String(rawAuthor).trim();
   }
 
-  // 4. Generación determinista consistente basada en el ID
-  const seed = String(comment.meta_comment_id || comment.id || comment.created_time || 'comment_seed');
+  // 4. Si el mensaje contiene mención o etiqueta de persona (ej. @Nombre)
+  const messageTags = comment.raw_data?.message_tags || comment.message_tags;
+  if (Array.isArray(messageTags) && messageTags.length > 0 && messageTags[0]?.name && !isGenericPlaceholderName(messageTags[0].name)) {
+    return String(messageTags[0].name).trim();
+  }
+
+  // 5. Generación determinista consistente basada en el identificador único
+  const seed = String(comment.meta_comment_id || comment.id || comment.author_id || comment.created_time || 'comment_seed');
   let hash1 = 0;
   let hash2 = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -888,7 +933,7 @@ async function upsertComment(
     authorId = comment.from.id || null;
     authorName = comment.from.name || null;
   }
-  if (!authorName || authorName.trim().toLowerCase() === 'usuario de facebook') {
+  if (!authorName || isGenericPlaceholderName(authorName)) {
     authorName = resolveCommentAuthorName({ meta_comment_id: metaCommentId, ...comment });
   }
 

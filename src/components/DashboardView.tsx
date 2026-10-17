@@ -1032,6 +1032,8 @@ export const DashboardView: React.FC = () => {
         onPostUpdated={loadPosts}
         onRefreshPostDb={handleRefreshSinglePostDb}
         isRefreshingDb={Boolean(selectedPost && refreshingDbPostId === (selectedPost.id || selectedPost.meta_post_id))}
+        pageInfo={pageInfo}
+        companyName={company?.name}
       />
 
       <SyncLogsModal
