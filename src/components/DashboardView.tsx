@@ -976,6 +976,8 @@ export const DashboardView: React.FC = () => {
                     isRefreshing={refreshingPostId === (post.id || post.meta_post_id)}
                     onRefreshPostDb={handleRefreshSinglePostDb}
                     isRefreshingDb={refreshingDbPostId === (post.id || post.meta_post_id)}
+                    pageInfo={pageInfo}
+                    companyName={company?.name}
                   />
                 ))}
               </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { MetaPost } from '../types';
-import { MessageSquare, ExternalLink, Calendar, Clock, Sparkles, BarChart2, Database } from 'lucide-react';
+import { MetaPost, MetaPageInfo } from '../types';
+import { MessageSquare, ExternalLink, Calendar, Clock, Sparkles, BarChart2, Database, Facebook, BadgeCheck } from 'lucide-react';
+import { isGenericPlaceholderName } from '../services/metaSyncService';
 
 interface PostCardProps {
   post: MetaPost;
@@ -9,6 +10,8 @@ interface PostCardProps {
   isRefreshing?: boolean;
   onRefreshPostDb?: (post: MetaPost) => void;
   isRefreshingDb?: boolean;
+  pageInfo?: MetaPageInfo | null;
+  companyName?: string;
   // Propiedades opcionales para retrocompatibilidad
   onAnalyzeAi?: (post: MetaPost) => void;
   isAnalyzingAi?: boolean;
@@ -25,6 +28,8 @@ export const PostCard: React.FC<PostCardProps> = ({
   isRefreshing = false,
   onRefreshPostDb,
   isRefreshingDb = false,
+  pageInfo,
+  companyName,
   onAnalyzeAi,
   isAnalyzingAi = false,
   onSyncComments,
@@ -365,13 +370,75 @@ export const PostCard: React.FC<PostCardProps> = ({
         )}
 
         <div className="p-4 sm:p-5">
-          {/* Post ID & Status badges */}
-          <div className="flex items-center justify-between gap-2 mb-2.5">
-            <span className="text-[11px] font-mono text-stone-600 bg-stone-100 px-2 py-0.5 rounded">
-              ID: {post.meta_post_id.slice(-10)}
-            </span>
+          {/* Cabecera del Autor / Fan Page en la tarjeta */}
+          {(() => {
+            const rawAuthor = post.raw_data?.from?.name;
+            const authorDisplayName =
+              (rawAuthor && !isGenericPlaceholderName(rawAuthor) && rawAuthor) ||
+              (pageInfo?.name && !isGenericPlaceholderName(pageInfo.name) && pageInfo.name) ||
+              (companyName && !isGenericPlaceholderName(companyName) && companyName) ||
+              'ELITEC';
+            const avatarSrc =
+              post.raw_data?.from?.picture?.data?.url ||
+              pageInfo?.picture ||
+              (companyName?.toLowerCase().includes('elitec') ? '/elitec_logo.png' : undefined);
 
-            <div className="flex items-center gap-1.5">
+            return (
+              <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-stone-100">
+                <div className="flex items-center gap-2 min-w-0">
+                  {avatarSrc ? (
+                    <img
+                      src={avatarSrc}
+                      alt={authorDisplayName}
+                      className="w-7 h-7 rounded-full object-cover border border-stone-200 shadow-2xs shrink-0"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                      {authorDisplayName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1">
+                      <span className="font-bold text-stone-900 text-xs truncate max-w-[170px]" title={authorDisplayName}>
+                        {authorDisplayName}
+                      </span>
+                      {(pageInfo?.verification_status === 'blue_verified' || pageInfo?.verification_status === 'verified') && (
+                        <BadgeCheck className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                      )}
+                    </div>
+                    <span className="text-[10px] text-stone-400 block">
+                      {formatDate(post.created_time)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-[10px] font-mono text-stone-600 bg-stone-100 px-1.5 py-0.2 rounded">
+                    ID: {post.meta_post_id.slice(-8)}
+                  </span>
+                  {post.permalink_url && (
+                    <a
+                      href={post.permalink_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-stone-400 hover:text-blue-600 transition-colors p-1"
+                      title="Abrir publicación en Facebook"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Badges de estado de IA */}
+          <div className="flex items-center justify-between gap-2 mb-2.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
               {hasAnyAiData && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-purple-50 text-purple-700 border border-purple-200">
                   <Sparkles className="w-2.5 h-2.5 text-purple-600" /> IA
@@ -381,18 +448,6 @@ export const PostCard: React.FC<PostCardProps> = ({
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
                   Modificado
                 </span>
-              )}
-              {post.permalink_url && (
-                <a
-                  href={post.permalink_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-400 hover:text-indigo-600 transition-colors p-1"
-                  title="Abrir publicación en Facebook"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
               )}
             </div>
           </div>
