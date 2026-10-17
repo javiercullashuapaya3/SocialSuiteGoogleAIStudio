@@ -29,14 +29,21 @@ export const LoginView: React.FC = () => {
   return (
     <div id="login-container" className="min-h-screen bg-stone-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-stone-900">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-200 mb-4">
-          <Building2 className="w-7 h-7" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 shadow-md p-1.5 mb-3 border border-stone-200">
+          <img
+            src="/promptia_logo.png"
+            alt="Promptia.lat Logo"
+            className="w-full h-full object-contain"
+          />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-stone-900">
-          Meta Analytics &amp; Sync
+          Social Suite
         </h1>
         <p className="mt-1 text-sm text-stone-600">
-          Portal empresarial de gestión de publicaciones y comentarios
+          Plataforma de Analítica Social y Sincronización con IA
+        </p>
+        <p className="text-xs text-indigo-600 font-semibold mt-0.5">
+          Creado por Promptia.lat
         </p>
 
         <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">

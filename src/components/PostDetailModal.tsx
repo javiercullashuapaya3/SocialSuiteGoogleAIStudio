@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MetaPost, MetaComment } from '../types';
-import { fetchPostComments, addTestComment, analyze_single_post_comments_ai } from '../services/metaSyncService';
+import { fetchPostComments, addTestComment, analyze_single_post_comments_ai, resolveCommentAuthorName } from '../services/metaSyncService';
 import {
   X,
   MessageSquare,
@@ -675,6 +675,7 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
               <div className="space-y-3">
                 {comments.map((comment) => {
                   const isExpanded = expandedAuthorCommentId === comment.meta_comment_id;
+                  const authorName = resolveCommentAuthorName(comment);
                   const profileUrl = comment.raw_data?.from?.link || (comment.author_id ? `https://www.facebook.com/${comment.author_id}` : null);
                   const avatarUrl = comment.raw_data?.from?.picture?.data?.url;
                   const likeCount = comment.raw_data?.like_count || 0;
@@ -690,19 +691,19 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                           {avatarUrl ? (
                             <img
                               src={avatarUrl}
-                              alt={comment.author_name || 'Avatar'}
+                              alt={authorName}
                               className="w-8 h-8 rounded-full object-cover border border-stone-200 shrink-0 mt-0.5"
                             />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-2xs shrink-0 mt-0.5">
-                              {comment.author_name ? comment.author_name.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
+                              {authorName.charAt(0).toUpperCase()}
                             </div>
                           )}
 
                           <div>
                             <div className="flex flex-wrap items-center gap-1.5">
                               <span className="text-xs font-bold text-stone-900">
-                                {comment.author_name || 'Usuario de Facebook'}
+                                {authorName}
                               </span>
 
                               {/* Botón interactivo para ver detalles completos de la persona */}
@@ -783,7 +784,7 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                                 Nombre Completo
                               </span>
                               <span className="font-bold text-stone-900 text-xs">
-                                {comment.author_name || 'Nombre no proporcionado'}
+                                {authorName}
                               </span>
                             </div>
 
@@ -907,7 +908,7 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
                                 <div className="flex items-center justify-between gap-1 mb-1">
                                   <div className="flex items-center gap-1.5">
                                     <span className="font-semibold text-stone-900">
-                                      {reply.author_name || 'Respuesta'}
+                                      {resolveCommentAuthorName(reply)}
                                     </span>
                                     {reply.author_id && (
                                       <code className="text-[10px] text-stone-500 bg-white px-1 py-0.2 rounded border border-stone-200 font-mono">
@@ -955,7 +956,7 @@ export const PostDetailModal: React.FC<PostDetailModalProps> = ({
           {replyingTo && (
             <div className="mb-2 px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-xs text-indigo-800 flex items-center justify-between">
               <span>
-                Respondiendo a: <strong>{replyingTo.author_name || 'Comentario'}</strong>
+                Respondiendo a: <strong>{resolveCommentAuthorName(replyingTo)}</strong>
               </span>
               <button
                 onClick={() => setReplyingTo(null)}

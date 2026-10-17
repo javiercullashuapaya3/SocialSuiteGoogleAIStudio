@@ -66,24 +66,55 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Company branding and tenant indicator */}
-          <div className="flex items-center gap-3">
-            {company?.logo ? (
-              <img
-                src={company.logo}
-                alt={company.name}
-                className="w-9 h-9 rounded-xl object-cover border border-stone-200"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-xs">
-                {company?.name ? company.name.charAt(0).toUpperCase() : 'M'}
-              </div>
-            )}
+          {/* Platform Branding: Social Suite & Promptia.lat + Tenant company */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* Social Suite platform brand by Promptia.lat */}
+            <div className="flex items-center gap-2.5 pr-3 sm:pr-4 border-r border-stone-200 shrink-0">
+              <a
+                href="https://promptia.lat"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2"
+                title="Promptia.lat - Creador de Social Suite"
+              >
+                <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center p-1 shadow-xs border border-stone-800 transition-transform group-hover:scale-105">
+                  <img
+                    src="/promptia_logo.png"
+                    alt="Promptia.lat Logo"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="hidden sm:block text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-extrabold text-stone-900 text-sm tracking-tight leading-none">
+                      Social Suite
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-stone-600 font-semibold block leading-tight">
+                    by Promptia.lat
+                  </span>
+                </div>
+              </a>
+            </div>
 
-            <div>
+            {/* Tenant company indicator and switcher */}
+            <div className="flex items-center gap-2.5">
+              {company?.logo ? (
+                <img
+                  src={company.logo}
+                  alt={company.name}
+                  className="w-8 h-8 rounded-lg object-cover border border-stone-200"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
+                  {company?.name ? company.name.charAt(0).toUpperCase() : 'M'}
+                </div>
+              )}
+
+              <div>
               <div className="flex items-center gap-2">
                 {companiesList && companiesList.length > 1 ? (
                   <select
@@ -168,6 +199,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
           </div>
+        </div>
 
           {/* Central Navigation Tabs */}
           {onTabChange && (

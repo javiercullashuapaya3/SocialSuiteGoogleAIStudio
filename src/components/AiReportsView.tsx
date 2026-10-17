@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { MetaPost, MetaComment } from '../types';
-import { fetchAllCompanyComments } from '../services/metaSyncService';
+import { fetchAllCompanyComments, resolveCommentAuthorName } from '../services/metaSyncService';
 import {
   Sparkles,
   BarChart3,
@@ -303,7 +303,7 @@ export const AiReportsView: React.FC<AiReportsViewProps> = ({
       if (commentSearch.trim()) {
         const q = commentSearch.toLowerCase();
         const msg = (c.message || '').toLowerCase();
-        const author = (c.author_name || '').toLowerCase();
+        const author = resolveCommentAuthorName(c).toLowerCase();
         const reason = (c.reason || '').toLowerCase();
         const intent = (c.intent || '').toLowerCase();
         if (!msg.includes(q) && !author.includes(q) && !reason.includes(q) && !intent.includes(q)) {
@@ -1122,12 +1122,12 @@ export const AiReportsView: React.FC<AiReportsViewProps> = ({
                   {/* Top line: Author, Date, and Badges */}
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-stone-100 text-stone-700 flex items-center justify-center text-xs font-bold border border-stone-200">
-                        {comment.author_name ? comment.author_name.charAt(0).toUpperCase() : <User className="w-3.5 h-3.5" />}
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs font-bold border border-indigo-200 shadow-2xs">
+                        {resolveCommentAuthorName(comment).charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <span className="text-xs font-bold text-stone-900">
-                          {comment.author_name || 'Usuario de Facebook'}
+                          {resolveCommentAuthorName(comment)}
                         </span>
                         <span className="text-[11px] text-stone-400 ml-2">
                           {comment.created_time

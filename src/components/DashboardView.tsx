@@ -608,69 +608,161 @@ export const DashboardView: React.FC = () => {
               </div>
             )}
 
-            {/* Tarjeta con el Nombre de la Fan Page de Facebook al inicio */}
+            {/* Tarjeta con el Nombre de la Fan Page de Facebook al inicio con datos enriquecidos */}
             {company?.meta_page_id && (
-              <div className="mb-6 p-4 sm:p-5 bg-white border border-stone-200 rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3.5">
-                  {pageInfo?.picture ? (
-                    <img
-                      src={pageInfo.picture}
-                      alt={pageInfo.name || 'Página'}
-                      className="w-12 h-12 rounded-2xl object-cover border border-stone-200 shadow-2xs shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
-                      <Facebook className="w-6 h-6" />
-                    </div>
-                  )}
+              <div className="mb-6 p-4 sm:p-5 bg-white border border-stone-200 rounded-2xl shadow-xs">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                  <div className="flex items-start sm:items-center gap-3.5">
+                    {pageInfo?.picture ? (
+                      <img
+                        src={pageInfo.picture}
+                        alt={pageInfo.name || 'Página'}
+                        className="w-14 h-14 rounded-2xl object-cover border border-stone-200 shadow-2xs shrink-0"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
+                        <Facebook className="w-7 h-7" />
+                      </div>
+                    )}
 
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight">
-                        {pageInfo?.name || `Página Facebook (${company.meta_page_id})`}
-                      </h2>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-                        <Facebook className="w-3 h-3 text-blue-600" />
-                        Página Conectada
-                      </span>
-                    </div>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight">
+                          {pageInfo?.name || `Página Facebook (${company.meta_page_id})`}
+                        </h2>
+                        {pageInfo?.username && (
+                          <span className="text-xs font-medium text-stone-500">
+                            @{pageInfo.username}
+                          </span>
+                        )}
+                        {(pageInfo?.verification_status === 'blue_verified' || pageInfo?.verification_status === 'verified') && (
+                          <span
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200"
+                            title="Página Verificada en Meta"
+                          >
+                            <BadgeCheck className="w-3.5 h-3.5 text-blue-600" />
+                            Verificada
+                          </span>
+                        )}
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                          <Facebook className="w-3 h-3 text-blue-600" />
+                          Página Conectada
+                        </span>
+                        {pageInfo?.is_published !== undefined && (
+                          <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                            pageInfo.is_published
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${pageInfo.is_published ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                            {pageInfo.is_published ? 'Publicada' : 'No publicada'}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="text-xs text-stone-500 flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-                      <span>
-                        Page ID: <code className="font-mono text-stone-900 font-bold">{company.meta_page_id}</code>
-                      </span>
-                      {pageInfo?.category && (
-                        <span>• Categoría: <strong className="text-stone-700">{pageInfo.category}</strong></span>
-                      )}
-                      {pageInfo?.fan_count !== undefined && (
-                        <span>• <strong className="text-stone-700">{pageInfo.fan_count.toLocaleString()}</strong> seguidores</span>
-                      )}
+                      {/* Metadatos principales */}
+                      <div className="text-xs text-stone-500 flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
+                        <span>
+                          Page ID: <code className="font-mono text-stone-900 font-bold">{company.meta_page_id}</code>
+                        </span>
+                        {pageInfo?.category && (
+                          <span>• Categoría: <strong className="text-stone-700">{pageInfo.category}</strong></span>
+                        )}
+                        {(pageInfo?.followers_count !== undefined || pageInfo?.fan_count !== undefined) && (
+                          <span className="inline-flex items-center gap-1 text-stone-700 font-medium">
+                            • <Users className="w-3 h-3 text-stone-400" />
+                            <strong>{((pageInfo.followers_count ?? pageInfo.fan_count) || 0).toLocaleString()}</strong> seguidores
+                          </span>
+                        )}
+                        {pageInfo?.website && (
+                          <span className="hidden sm:inline-flex items-center gap-1">
+                            • <Globe className="w-3 h-3 text-stone-400" />
+                            <a
+                              href={pageInfo.website.startsWith('http') ? pageInfo.website : `https://${pageInfo.website}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-indigo-600 hover:underline max-w-[150px] truncate"
+                            >
+                              {pageInfo.website.replace(/^https?:\/\//, '')}
+                            </a>
+                          </span>
+                        )}
+                        {pageInfo?.phone && (
+                          <span className="hidden md:inline-flex items-center gap-1">
+                            • <Phone className="w-3 h-3 text-stone-400" />
+                            <span>{pageInfo.phone}</span>
+                          </span>
+                        )}
+                      </div>
                     </div>
+                  </div>
+
+                  {/* Acciones de la cabecera de la página */}
+                  <div className="flex flex-wrap items-center gap-2 shrink-0 pt-2 lg:pt-0">
+                    <button
+                      onClick={() => setIsShowPageCurlModal(true)}
+                      className="px-3 py-2 text-xs font-semibold text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-xl border border-stone-200 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                      title="Ver cURL exacto para consultar datos de la página"
+                    >
+                      <Terminal className="w-3.5 h-3.5 text-stone-600" />
+                      <span>cURL Página</span>
+                    </button>
+
+                    {pageInfo?.link && (
+                      <a
+                        href={pageInfo.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-2 text-xs font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 flex items-center gap-1.5 transition-colors shadow-2xs"
+                      >
+                        <Facebook className="w-3.5 h-3.5" />
+                        <span>Ver en Facebook</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+
+                    <button
+                      onClick={() => setActiveTab('config')}
+                      className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-xl border border-stone-200 transition-colors cursor-pointer shadow-2xs"
+                      title="Editar credenciales de conexión"
+                    >
+                      <Sliders className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  {pageInfo?.link && (
-                    <a
-                      href={pageInfo.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3.5 py-2 text-xs font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 flex items-center gap-1.5 transition-colors"
-                    >
-                      <Facebook className="w-3.5 h-3.5" />
-                      <span>Ver en Facebook</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  )}
-
-                  <button
-                    onClick={() => setActiveTab('config')}
-                    className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-xl border border-stone-200 transition-colors"
-                    title="Editar credenciales de conexión"
-                  >
-                    <Sliders className="w-4 h-4" />
-                  </button>
-                </div>
+                {/* Fila secundaria si hay datos adicionales: Dirección, Teléfono, WhatsApp, Emails, About/Bio */}
+                {(pageInfo?.about || pageInfo?.bio || pageInfo?.description || pageInfo?.single_line_address || (pageInfo?.emails && pageInfo.emails.length > 0) || pageInfo?.whatsapp_number) && (
+                  <div className="mt-3 pt-3 border-t border-stone-100 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-stone-600">
+                    {pageInfo?.single_line_address && (
+                      <div className="flex items-start gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-stone-400 mt-0.5 shrink-0" />
+                        <span className="truncate" title={pageInfo.single_line_address}>
+                          {pageInfo.single_line_address}
+                        </span>
+                      </div>
+                    )}
+                    {pageInfo?.whatsapp_number && (
+                      <div className="flex items-center gap-1.5">
+                        <MessageCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <span>WhatsApp: {pageInfo.whatsapp_number}</span>
+                      </div>
+                    )}
+                    {pageInfo?.emails && pageInfo.emails.length > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <Mail className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                        <span className="truncate" title={pageInfo.emails.join(', ')}>
+                          {pageInfo.emails.join(', ')}
+                        </span>
+                      </div>
+                    )}
+                    {(pageInfo?.about || pageInfo?.bio || pageInfo?.description) && (
+                      <div className="md:col-span-2 lg:col-span-3 text-[11px] text-stone-500 italic bg-stone-50 px-2.5 py-1.5 rounded-lg border border-stone-100 line-clamp-2">
+                        "{pageInfo.about || pageInfo.bio || pageInfo.description}"
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -892,12 +984,40 @@ export const DashboardView: React.FC = () => {
         )}
       </main>
 
-      {/* Footer */}
+      {/* Footer con marca Promptia.lat y Social Suite */}
       <footer className="bg-white border-t border-stone-200 py-4 px-4 sm:px-8 text-center text-xs text-stone-500">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Sincronizador de Publicaciones y Comentarios de Facebook</span>
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <a
+              href="https://promptia.lat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 group hover:opacity-90 transition-opacity"
+            >
+              <div className="w-5 h-5 rounded-md bg-slate-900 p-0.5 flex items-center justify-center">
+                <img
+                  src="/promptia_logo.png"
+                  alt="Promptia.lat"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="font-bold text-stone-900">Social Suite</span>
+            </a>
+            <span className="text-stone-300">•</span>
+            <span>
+              Creado por{' '}
+              <a
+                href="https://promptia.lat"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors"
+              >
+                Promptia.lat
+              </a>
+            </span>
+          </div>
           <span className="text-[11px] text-stone-400">
-            Sincronización inteligente de cambios recientes
+            Analítica de Redes Sociales y Sincronización Inteligente con IA
           </span>
         </div>
       </footer>
@@ -930,6 +1050,115 @@ export const DashboardView: React.FC = () => {
           await loadPosts();
         }}
       />
+
+      {/* Modal de cURL para la Fan Page de Facebook (Meta Graph API v21.0) */}
+      {isShowPageCurlModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl border border-stone-200 w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-150">
+            <div className="px-5 py-4 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                  <Terminal className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-stone-900">
+                    cURL de Fan Page en Meta Graph API v21.0
+                  </h3>
+                  <p className="text-xs text-stone-500">
+                    Obtención de campos oficiales: name, followers, category, website, phone, etc.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsShowPageCurlModal(false)}
+                className="p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-200/60 rounded-lg transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              <div className="text-xs text-stone-600 leading-relaxed">
+                Este es el comando cURL que consulta la información extendida de la Fan Page (<code className="font-mono text-stone-900 font-bold">{company?.meta_page_id || '113022817972331'}</code>) usando el <code className="font-mono text-stone-900">meta_token</code> de la tabla <strong className="font-mono text-indigo-700">companies</strong>:
+              </div>
+
+              <div className="relative group bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto shadow-inner border border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const curlCmd = getPageInfoCurl(company?.meta_page_id, company?.meta_token);
+                    navigator.clipboard.writeText(curlCmd);
+                    setCopiedPageCurl(true);
+                    setTimeout(() => setCopiedPageCurl(false), 2000);
+                  }}
+                  className="absolute top-3 right-3 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg flex items-center gap-1.5 border border-slate-700 transition-colors cursor-pointer shadow-xs"
+                  title="Copiar cURL al portapapeles"
+                >
+                  {copiedPageCurl ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-300 font-sans font-semibold">Copiado</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="font-sans font-medium">Copiar cURL</span>
+                    </>
+                  )}
+                </button>
+                <pre className="whitespace-pre-wrap break-all pr-24 leading-relaxed text-indigo-200">
+                  {getPageInfoCurl(company?.meta_page_id, company?.meta_token)}
+                </pre>
+              </div>
+
+              {/* Vista previa de los datos obtenidos actualmente */}
+              {pageInfo && (
+                <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 text-xs space-y-2">
+                  <div className="flex items-center justify-between font-semibold text-stone-700 border-b border-stone-200 pb-1.5">
+                    <span>Datos actualmente cargados:</span>
+                    <span className="text-[11px] text-blue-600 font-mono">Facebook Graph API v21.0</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[11px]">
+                    <div><span className="text-stone-400 block">ID:</span> <span className="font-mono font-semibold text-stone-900">{pageInfo.id}</span></div>
+                    <div><span className="text-stone-400 block">Nombre:</span> <span className="font-semibold text-stone-900">{pageInfo.name}</span></div>
+                    <div><span className="text-stone-400 block">Username:</span> <span className="text-stone-800">@{pageInfo.username || '—'}</span></div>
+                    <div><span className="text-stone-400 block">Seguidores / Fans:</span> <span className="text-stone-800 font-medium">{(pageInfo.followers_count ?? pageInfo.fan_count)?.toLocaleString() || '—'}</span></div>
+                    <div><span className="text-stone-400 block">Categoría:</span> <span className="text-stone-800">{pageInfo.category || '—'}</span></div>
+                    <div><span className="text-stone-400 block">Estado:</span> <span className="text-stone-800">{pageInfo.is_published ? 'Publicada' : 'No publicada'}</span></div>
+                    {pageInfo.phone && <div><span className="text-stone-400 block">Teléfono:</span> <span className="text-stone-800">{pageInfo.phone}</span></div>}
+                    {pageInfo.whatsapp_number && <div><span className="text-stone-400 block">WhatsApp:</span> <span className="text-stone-800">{pageInfo.whatsapp_number}</span></div>}
+                    {pageInfo.website && <div className="sm:col-span-2"><span className="text-stone-400 block">Sitio Web:</span> <a href={pageInfo.website} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">{pageInfo.website}</a></div>}
+                    {pageInfo.single_line_address && <div className="sm:col-span-3"><span className="text-stone-400 block">Dirección:</span> <span className="text-stone-800">{pageInfo.single_line_address}</span></div>}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (company?.meta_page_id) {
+                      const info = await fetchMetaPageInfo(company.meta_page_id, company.meta_token);
+                      if (info) setPageInfo(info);
+                    }
+                  }}
+                  className="px-3.5 py-2 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Volver a consultar Graph API</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsShowPageCurlModal(false)}
+                  className="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
