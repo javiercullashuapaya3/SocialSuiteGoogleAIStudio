@@ -1,3 +1,4 @@
+cat << 'EOF' > /var/www/SocialSuiteGoogleAIStudio/.github/workflows/deploy.yml
 name: Deploy Social Suite to VPS
 
 on:
@@ -19,14 +20,34 @@ jobs:
         script: |
           export PATH=$PATH:/usr/local/bin:/usr/bin:~/.nvm/versions/node/$(ls ~/.nvm/versions/node 2>/dev/null | tail -n 1)/bin
           cd /var/www/SocialSuiteGoogleAIStudio
+          
+          # 1. Sincronizar cambios de Google AI Studio
           git fetch origin main
           git reset --hard origin/main
-          git clean -fd -e .env -e data/
+          
+          # 2. Instalar librerías y compilar Vite
           npm install --legacy-peer-deps
           npm run build
-          sed -i 's/\b3000\b/3002/g' dist/server.cjs 2>/dev/null || true
-          sed -i 's/\b3001\b/3002/g' dist/server.cjs 2>/dev/null || true
-          sed -i 's/\b3e3\b/3002/g' dist/server.cjs 2>/dev/null || true
-          sed -i '1s/^/process.env.PORT = "3002";\n/' dist/server.cjs 2>/dev/null || true
-          PORT=3002 pm2 restart social-suite --update-env || PORT=3002 pm2 start dist/server.cjs --name "social-suite" --update-env
+          
+          # 3. Garantizar siempre la existencia de server.cjs
+          cat << 'INNER_EOF' > server.cjs
+          const express = require('express');
+          const path = require('path');
+          const app = express();
+          const PORT = process.env.PORT || 3002;
+
+          app.use(express.static(path.join(__dirname, 'dist')));
+
+          app.get('*', (req, res) => {
+            res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+          });
+
+          app.listen(PORT, '0.0.0.0', () => {
+            console.log(`Social Suite corriendo en http://0.0.0.0:${PORT}`);
+          });
+          INNER_EOF
+          
+          # 4. Reiniciar o levantar en PM2
+          PORT=3002 pm2 restart social-suite --update-env || PORT=3002 pm2 start server.cjs --name "social-suite" --update-env
           pm2 save
+EOF
