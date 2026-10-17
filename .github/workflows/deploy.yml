@@ -1,4 +1,3 @@
-cat << 'EOF' > /var/www/SocialSuiteGoogleAIStudio/.github/workflows/deploy.yml
 name: Deploy Social Suite to VPS
 
 on:
@@ -25,11 +24,14 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           
-          # 2. Instalar librerías y compilar Vite
+          # 2. Forzar enlace simbolico al centro maestro de Supabase
+          ln -sf /etc/promptia/supabase.env .env
+
+          # 3. Instalar librerías y compilar Vite
           npm install --legacy-peer-deps
           npm run build
           
-          # 3. Garantizar siempre la existencia de server.cjs
+          # 4. Garantizar siempre la existencia de server.cjs
           cat << 'INNER_EOF' > server.cjs
           const express = require('express');
           const path = require('path');
@@ -47,7 +49,6 @@ jobs:
           });
           INNER_EOF
           
-          # 4. Reiniciar o levantar en PM2
+          # 5. Reiniciar o levantar en PM2
           PORT=3002 pm2 restart social-suite --update-env || PORT=3002 pm2 start server.cjs --name "social-suite" --update-env
           pm2 save
-EOF
