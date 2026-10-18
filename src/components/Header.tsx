@@ -47,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   syncStats,
 }) => {
-  const { userName, company, companiesList, selectCompany, handleLogout, isDemoMode } = useAuth();
+  const { userName, company, handleLogout, isDemoMode } = useAuth();
   const [pageInfo, setPageInfo] = useState<MetaPageInfo | null>(null);
 
   const isConfigured = Boolean(company?.meta_page_id && company?.meta_token);
@@ -122,24 +122,12 @@ export const Header: React.FC<HeaderProps> = ({
                   <span className="text-[10px] font-bold text-stone-600 uppercase tracking-wider shrink-0">
                     Cliente:
                   </span>
-                  {companiesList && companiesList.length > 1 ? (
-                    <select
-                      value={company?.client_id || 1}
-                      onChange={(e) => selectCompany?.(Number(e.target.value))}
-                      className="font-bold text-stone-900 text-xs sm:text-sm bg-white border border-stone-300 rounded-md px-2 py-0.5 shadow-2xs focus:ring-2 focus:ring-indigo-500 cursor-pointer max-w-[150px] sm:max-w-[210px] truncate"
-                      title="Cambiar empresa cliente activa"
-                    >
-                      {companiesList.map((c) => (
-                        <option key={c.id} value={c.client_id}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <span className="font-bold text-stone-900 text-xs sm:text-sm tracking-tight truncate max-w-[150px] sm:max-w-[220px]">
-                      {company?.name || 'Mi Empresa'}
-                    </span>
-                  )}
+                  <span
+                    className="font-bold text-stone-900 text-xs sm:text-sm tracking-tight truncate max-w-[160px] sm:max-w-[240px]"
+                    title={`Empresa cliente asignada: ${company?.name || 'Mi Empresa'}`}
+                  >
+                    {company?.name || 'Mi Empresa'}
+                  </span>
                   {isDemoMode && (
                     <span className="px-1.5 py-0.2 rounded-md text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1 shrink-0">
                       <Radio className="w-2.5 h-2.5 text-amber-600 animate-pulse" /> Demo

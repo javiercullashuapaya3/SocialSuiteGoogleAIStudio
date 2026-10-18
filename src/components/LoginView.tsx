@@ -126,7 +126,7 @@ export const LoginView: React.FC = () => {
                   <button
                     id="btn-demo-mode"
                     type="button"
-                    onClick={() => enterDemoMode && enterDemoMode(1)}
+                    onClick={() => enterDemoMode && enterDemoMode(3)}
                     className="w-full py-2 px-3 bg-stone-900 text-white hover:bg-stone-800 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-amber-300" />

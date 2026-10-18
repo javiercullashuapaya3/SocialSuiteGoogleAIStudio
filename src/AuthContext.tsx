@@ -133,8 +133,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
 
-      // 6. Si aún no hay clientId, por defecto usar 1 (Promptia.lat)
-      const targetCompanyId = Number(clientId) || 1;
+      // 6. Si aún no hay clientId, por defecto usar 3 (ELITEC)
+      const targetCompanyId = Number(clientId) || 3;
 
       // 7. Consultar la tabla 'companies' de Supabase por 'id'
       let companyData: any = null;
@@ -520,7 +520,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Helper para modo demo / visualización rápida con empresa real
-  const enterDemoMode = (demoClientId: number = 1) => {
+  const enterDemoMode = (demoClientId: number = 3) => {
     setIsDemoMode(true);
     setUserName('Javier Analista');
     selectCompany(demoClientId);

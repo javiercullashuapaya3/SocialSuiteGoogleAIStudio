@@ -25,7 +25,7 @@ interface CompanyConfigViewProps {
 export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
   onGoToFeedAndSync,
 }) => {
-  const { company, companiesList, selectCompany, updateCompanyConfig, refreshCompanyData } = useAuth();
+  const { company, updateCompanyConfig, refreshCompanyData } = useAuth();
 
   const [pageId, setPageId] = useState(company?.meta_page_id ? String(company.meta_page_id) : '');
   const [token, setToken] = useState(company?.meta_token || '');
@@ -202,29 +202,12 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
             <label className="text-[10px] text-stone-500 font-semibold block uppercase tracking-wider">
               Empresa activa:
             </label>
-            {companiesList && companiesList.length > 1 ? (
-              <select
-                value={company?.client_id || 1}
-                onChange={async (e) => {
-                  const targetId = Number(e.target.value);
-                  if (selectCompany) {
-                    await selectCompany(targetId);
-                  }
-                }}
-                className="font-bold text-stone-900 bg-white border border-stone-300 rounded px-2 py-0.5 mt-0.5 text-xs focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                title="Selecciona la empresa que deseas configurar"
-              >
-                {companiesList.map((c) => (
-                  <option key={c.id} value={c.client_id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="font-bold text-stone-900">{company?.name || 'Mi Empresa'}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="font-bold text-stone-900 text-xs sm:text-sm">{company?.name || 'Mi Empresa'}</span>
+              <span className="text-[10px] font-mono text-stone-500 bg-stone-100 px-1.5 py-0.2 rounded border border-stone-200">
+                ID: {company?.client_id || company?.id}
+              </span>
+            </div>
           </div>
         </div>
       </div>
