@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
 import { TenantCompany } from './types';
 
 interface AuthContextType {
@@ -391,42 +391,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let isMounted = true;
 
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
     // Cargar empresas al inicio
     loadAllCompanies();
 
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      if (!isMounted) return;
-      setSession(currentSession);
-      if (currentSession?.user) {
-        fetchUserData(currentSession.user);
-      } else {
-        // Si no hay sesión, inicializar con la empresa 1 (Promptia.lat) de Supabase
-        const targetId = Number(localStorage.getItem('active_company_id')) || 1;
-        (async () => {
-          const { data: cData } = await supabase
-            .from('companies')
-            .select('*')
-            .eq('id', targetId)
-            .maybeSingle();
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: currentSession } }) => {
+        if (!isMounted) return;
+        setSession(currentSession);
+        if (currentSession?.user) {
+          fetchUserData(currentSession.user);
+        } else {
+          // Si no hay sesión, inicializar con la empresa 3 (ELITEC) o la almacenada
+          const targetId = Number(localStorage.getItem('active_company_id')) || 3;
+          (async () => {
+            try {
+              const { data: cData } = await supabase
+                .from('companies')
+                .select('*')
+                .eq('id', targetId)
+                .maybeSingle();
 
-          if (cData && isMounted) {
-            setCompany({
-              id: String(cData.id || cData.client_id || targetId),
-              client_id: Number(cData.client_id || cData.id || targetId),
-              name: cData.name || 'Promptia.lat',
-              logo: cData.logo || '',
-              public_client_id: cData.public_client_id,
-              api_key: cData.api_key,
-              hubspot_token: cData.hubspot_token || '',
-              meta_page_id: cData.meta_page_id ? String(cData.meta_page_id) : '',
-              meta_token: cData.meta_token || '',
-              kie_apikey: cData.kie_apikey || '',
-            });
-          }
-        })();
-      }
-      setLoading(false);
-    });
+              if (cData && isMounted) {
+                setCompany({
+                  id: String(cData.id || cData.client_id || targetId),
+                  client_id: Number(cData.client_id || cData.id || targetId),
+                  name: cData.name || 'ELITEC',
+                  logo: cData.logo || '',
+                  public_client_id: cData.public_client_id,
+                  api_key: cData.api_key,
+                  hubspot_token: cData.hubspot_token || '',
+                  meta_page_id: cData.meta_page_id ? String(cData.meta_page_id) : '',
+                  meta_token: cData.meta_token || '',
+                  kie_apikey: cData.kie_apikey || '',
+                });
+              }
+            } catch {
+              // Ignorar si Supabase no está disponible aún
+            }
+          })();
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        if (isMounted) setLoading(false);
+      });
 
     const {
       data: { subscription },
@@ -446,7 +462,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [isDemoMode]);
+  }, []);
 
   // =========================================================================
   // PASO C: EJECUTAR EL LOGIN (Submit del Formulario)
@@ -454,11 +470,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoginError(null);
+
+    if (!isSupabaseConfigured) {
+      setLoginError(
+        'Falta configurar la conexión a Supabase en este entorno (variables VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY no definidas).'
+      );
+      return;
+    }
+
     setIsLoggingIn(true);
 
     const formData = new FormData(e.currentTarget);
     const email = ((formData.get('email') as string) || '').trim().toLowerCase();
-    const password = ((formData.get('password') as string) || '').trim();
+    const password = (formData.get('password') as string) || '';
 
     if (!email || !password) {
       setLoginError('Por favor ingresa tu correo y contraseña.');
@@ -482,16 +506,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else if (msg.includes('too many requests') || msg.includes('rate limit')) {
           setLoginError('Demasiados intentos. Por favor espera unos momentos e intenta de nuevo.');
         } else {
-          setLoginError('No fue posible iniciar sesión. Por favor verifica tus credenciales.');
+          setLoginError(`No fue posible iniciar sesión: ${error.message}`);
         }
         setIsLoggingIn(false);
       } else if (data?.user) {
         setIsDemoMode(false);
+        if (data.session) {
+          setSession(data.session);
+        }
+        await fetchUserData(data.user);
         setIsLoggingIn(false);
       }
     } catch (err: any) {
       console.error('Error en login:', err);
-      setLoginError('Error de conexión. Verifica tu conexión a internet o intenta nuevamente.');
+      setLoginError('Error de conexión con Supabase. Verifica la URL del proyecto o tu conexión a internet.');
       setIsLoggingIn(false);
     }
   };
@@ -523,6 +551,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const enterDemoMode = (demoClientId: number = 3) => {
     setIsDemoMode(true);
     setUserName('Javier Analista');
+    setCompany((prev) =>
+      prev || {
+        id: String(demoClientId),
+        client_id: demoClientId,
+        name: demoClientId === 3 ? 'ELITEC' : 'Empresa Demo',
+        logo: '',
+        meta_page_id: '',
+        meta_token: '',
+      }
+    );
     selectCompany(demoClientId);
   };
 

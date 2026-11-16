@@ -26,7 +26,6 @@ import {
   MetaPageInfo,
   triggerMetaPostsWebhook,
   getMetaPostsWebhookCurl,
-  getPageInfoCurl,
 } from '../services/metaSyncService';
 import {
   Search,
@@ -81,8 +80,6 @@ export const DashboardView: React.FC = () => {
   // Modals state
   const [isLogsOpen, setIsLogsOpen] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
-  const [isShowPageCurlModal, setIsShowPageCurlModal] = useState(false);
-  const [copiedPageCurl, setCopiedPageCurl] = useState(false);
   const [activeProcessAlert, setActiveProcessAlert] = useState<{ message: string; startedAt: string } | null>(null);
 
   // Filtro de fecha para análisis de IA (Último año por defecto)
@@ -488,7 +485,7 @@ export const DashboardView: React.FC = () => {
   const isMetaConfigured = Boolean(company?.meta_page_id && company?.meta_token);
 
   return (
-    <div id="dashboard-container" className="min-h-screen bg-stone-50 text-stone-900 flex flex-col">
+    <div id="dashboard-container" className="min-h-screen bg-[#F4F8FB] text-[#0B0F19] flex flex-col">
       {/* Top Header */}
       <Header
         onSync={handleSync}
@@ -512,35 +509,35 @@ export const DashboardView: React.FC = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Banner de Aviso de Proceso Activo en Ejecución (si status = 'EN PROCESO' en sync_process_logs) */}
         {activeProcessAlert && (
-          <div className="mb-6 p-4 sm:p-5 bg-amber-50/95 border-2 border-amber-300 rounded-2xl flex items-start justify-between gap-3 text-amber-950 shadow-md animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="mb-6 p-4 sm:p-5 bg-amber-50/95 border border-amber-300 rounded-2xl flex items-start justify-between gap-3 text-amber-950 shadow-xs animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="flex items-start gap-3.5">
               <div className="p-2.5 bg-amber-100 text-amber-700 rounded-xl shrink-0 mt-0.5 border border-amber-200">
-                <Clock className="w-5 h-5 animate-pulse" />
+                <Clock className="w-5 h-5 animate-spin" />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <h4 className="font-bold text-sm sm:text-base text-amber-950">
                     Proceso actualmente en ejecución
                   </h4>
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-200/90 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-300">
-                    EN PROCESO
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800">
+                    · EN PROCESO
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-amber-900 leading-relaxed font-semibold">
                   {activeProcessAlert.message}
                 </p>
                 <div className="pt-1 flex flex-wrap items-center gap-2 text-[11px] text-amber-800">
-                  <span className="bg-white/90 px-2 py-0.5 rounded-md border border-amber-200 font-mono font-semibold">
+                  <span className="bg-white/90 px-2 py-0.5 rounded-md border border-amber-200 font-mono font-semibold tabular-nums">
                     Hora de inicio: {activeProcessAlert.startedAt}
                   </span>
-                  <span>• Por favor, espera a que termine el proceso para iniciar uno nuevo.</span>
+                  <span>· Por favor, espera a que termine el proceso para iniciar uno nuevo.</span>
                 </div>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setActiveProcessAlert(null)}
-              className="p-1.5 text-amber-600 hover:text-amber-950 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer shrink-0"
+              className="p-1.5 text-amber-700 hover:text-amber-950 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer shrink-0"
               title="Cerrar aviso"
             >
               <X className="w-5 h-5" />
@@ -580,16 +577,16 @@ export const DashboardView: React.FC = () => {
           <>
             {/* Banner if credentials are not configured yet */}
             {!isMetaConfigured && (
-              <div className="mb-6 p-4 bg-amber-50/80 border border-amber-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-950">
+              <div className="mb-6 p-4 bg-amber-50/90 border border-amber-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-950">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                     <ShieldAlert className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs sm:text-sm font-bold text-amber-900">
+                    <h4 className="text-xs sm:text-sm font-bold text-amber-950">
                       Configura el Page ID y Access Token de Meta
                     </h4>
-                    <p className="text-xs text-amber-800/90 mt-0.5">
+                    <p className="text-xs text-amber-900/85 mt-0.5">
                       Ingresa tus credenciales en la pestaña de configuración para sincronizar y descargar publicaciones y comentarios reales de Facebook.
                     </p>
                   </div>
@@ -598,11 +595,11 @@ export const DashboardView: React.FC = () => {
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => setActiveTab('config')}
-                    className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                    className="px-3.5 py-2 bg-[#0B0F19] hover:bg-[#1E293B] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer whitespace-nowrap"
                   >
-                    <Settings className="w-3.5 h-3.5" />
+                    <Settings className="w-3.5 h-3.5 text-[#21B6EA]" />
                     <span>Configurar Meta</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#21B6EA]" />
                   </button>
                 </div>
               </div>
@@ -610,86 +607,85 @@ export const DashboardView: React.FC = () => {
 
             {/* Tarjeta con el Nombre de la Fan Page de Facebook al inicio con datos enriquecidos */}
             {company?.meta_page_id && (
-              <div className="mb-6 p-4 sm:p-5 bg-white border border-stone-200 rounded-2xl shadow-xs">
+              <div className="mb-6 p-4 sm:p-5 bg-white border border-slate-200 rounded-2xl shadow-2xs">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex items-start sm:items-center gap-3.5">
                     {pageInfo?.picture ? (
                       <img
                         src={pageInfo.picture}
                         alt={pageInfo.name || 'Página'}
-                        className="w-14 h-14 rounded-2xl object-cover border border-stone-200 shadow-2xs shrink-0"
+                        className="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0"
                       />
                     ) : (
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
+                      <div className="w-14 h-14 rounded-2xl bg-[#0B0F19] border border-[#1E293B] text-[#21B6EA] flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
                         <Facebook className="w-7 h-7" />
                       </div>
                     )}
 
                     <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight">
+                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                        <h2 className="text-base sm:text-lg font-extrabold text-[#0B0F19] tracking-tight">
                           {pageInfo?.name || `Página Facebook (${company.meta_page_id})`}
                         </h2>
                         {pageInfo?.username && (
-                          <span className="text-xs font-medium text-stone-500">
+                          <span className="text-xs font-medium text-slate-500">
                             @{pageInfo.username}
                           </span>
                         )}
                         {(pageInfo?.verification_status === 'blue_verified' || pageInfo?.verification_status === 'verified') && (
                           <span
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200"
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0369A1]"
                             title="Página Verificada en Meta"
                           >
-                            <BadgeCheck className="w-3.5 h-3.5 text-blue-600" />
+                            <BadgeCheck className="w-3.5 h-3.5 text-[#21B6EA]" />
                             Verificada
                           </span>
                         )}
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-                          <Facebook className="w-3 h-3 text-blue-600" />
+                        <span className="text-slate-300" aria-hidden="true">·</span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1E293B]">
+                          <Facebook className="w-3 h-3 text-[#21B6EA]" />
                           Página Conectada
                         </span>
                         {pageInfo?.is_published !== undefined && (
-                          <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
-                            pageInfo.is_published
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                              : 'bg-amber-50 text-amber-800 border-amber-200'
-                          }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${pageInfo.is_published ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-                            {pageInfo.is_published ? 'Publicada' : 'No publicada'}
-                          </span>
+                          <>
+                            <span className="text-slate-300" aria-hidden="true">·</span>
+                            <span className={`text-[11px] font-semibold ${pageInfo.is_published ? 'text-emerald-700' : 'text-amber-700'}`}>
+                              {pageInfo.is_published ? 'Publicada' : 'No publicada'}
+                            </span>
+                          </>
                         )}
                       </div>
 
                       {/* Metadatos principales */}
-                      <div className="text-xs text-stone-500 flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
+                      <div className="text-xs text-slate-500 flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
                         <span>
-                          Page ID: <code className="font-mono text-stone-900 font-bold">{company.meta_page_id}</code>
+                          Page ID: <code className="font-mono text-[#0B0F19] font-bold tabular-nums">{company.meta_page_id}</code>
                         </span>
                         {pageInfo?.category && (
-                          <span>• Categoría: <strong className="text-stone-700">{pageInfo.category}</strong></span>
+                          <span>· Categoría: <strong className="text-[#1E293B]">{pageInfo.category}</strong></span>
                         )}
                         {(pageInfo?.followers_count !== undefined || pageInfo?.fan_count !== undefined) && (
-                          <span className="inline-flex items-center gap-1 text-stone-700 font-medium">
-                            • <Users className="w-3 h-3 text-stone-400" />
+                          <span className="inline-flex items-center gap-1 text-[#1E293B] font-medium tabular-nums">
+                            · <Users className="w-3 h-3 text-slate-400" />
                             <strong>{((pageInfo.followers_count ?? pageInfo.fan_count) || 0).toLocaleString()}</strong> seguidores
                           </span>
                         )}
                         {pageInfo?.website && (
                           <span className="hidden sm:inline-flex items-center gap-1">
-                            • <Globe className="w-3 h-3 text-stone-400" />
+                            · <Globe className="w-3 h-3 text-slate-400" />
                             <a
                               href={pageInfo.website.startsWith('http') ? pageInfo.website : `https://${pageInfo.website}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-indigo-600 hover:underline max-w-[150px] truncate"
+                              className="text-[#0369A1] hover:text-[#21B6EA] hover:underline max-w-[160px] truncate"
                             >
                               {pageInfo.website.replace(/^https?:\/\//, '')}
                             </a>
                           </span>
                         )}
                         {pageInfo?.phone && (
-                          <span className="hidden md:inline-flex items-center gap-1">
-                            • <Phone className="w-3 h-3 text-stone-400" />
+                          <span className="hidden md:inline-flex items-center gap-1 font-mono tabular-nums">
+                            · <Phone className="w-3 h-3 text-slate-400" />
                             <span>{pageInfo.phone}</span>
                           </span>
                         )}
@@ -699,23 +695,14 @@ export const DashboardView: React.FC = () => {
 
                   {/* Acciones de la cabecera de la página */}
                   <div className="flex flex-wrap items-center gap-2 shrink-0 pt-2 lg:pt-0">
-                    <button
-                      onClick={() => setIsShowPageCurlModal(true)}
-                      className="px-3 py-2 text-xs font-semibold text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-xl border border-stone-200 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
-                      title="Ver cURL exacto para consultar datos de la página"
-                    >
-                      <Terminal className="w-3.5 h-3.5 text-stone-600" />
-                      <span>cURL Página</span>
-                    </button>
-
                     {pageInfo?.link && (
                       <a
                         href={pageInfo.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-2 text-xs font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 flex items-center gap-1.5 transition-colors shadow-2xs"
+                        className="px-3.5 py-2 text-xs font-bold text-[#0369A1] hover:text-[#0B0F19] bg-[#E8F8FE] hover:bg-[#21B6EA]/25 rounded-xl border border-[#21B6EA]/40 flex items-center gap-1.5 transition-colors shadow-2xs whitespace-nowrap"
                       >
-                        <Facebook className="w-3.5 h-3.5" />
+                        <Facebook className="w-3.5 h-3.5 text-[#21B6EA]" />
                         <span>Ver en Facebook</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
@@ -723,7 +710,7 @@ export const DashboardView: React.FC = () => {
 
                     <button
                       onClick={() => setActiveTab('config')}
-                      className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-xl border border-stone-200 transition-colors cursor-pointer shadow-2xs"
+                      className="p-2 text-[#1E293B] hover:text-[#0B0F19] hover:bg-[#F4F8FB] rounded-xl border border-slate-200 transition-colors cursor-pointer shadow-2xs"
                       title="Editar credenciales de conexión"
                     >
                       <Sliders className="w-4 h-4" />
@@ -731,33 +718,33 @@ export const DashboardView: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Fila secundaria si hay datos adicionales: Dirección, Teléfono, WhatsApp, Emails, About/Bio */}
+                {/* Fila secundaria si hay datos adicionales */}
                 {(pageInfo?.about || pageInfo?.bio || pageInfo?.description || pageInfo?.single_line_address || (pageInfo?.emails && pageInfo.emails.length > 0) || pageInfo?.whatsapp_number) && (
-                  <div className="mt-3 pt-3 border-t border-stone-100 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-stone-600">
+                  <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-slate-600">
                     {pageInfo?.single_line_address && (
                       <div className="flex items-start gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-stone-400 mt-0.5 shrink-0" />
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
                         <span className="truncate" title={pageInfo.single_line_address}>
                           {pageInfo.single_line_address}
                         </span>
                       </div>
                     )}
                     {pageInfo?.whatsapp_number && (
-                      <div className="flex items-center gap-1.5">
-                        <MessageCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      <div className="flex items-center gap-1.5 font-mono tabular-nums">
+                        <MessageCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         <span>WhatsApp: {pageInfo.whatsapp_number}</span>
                       </div>
                     )}
                     {pageInfo?.emails && pageInfo.emails.length > 0 && (
                       <div className="flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                        <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         <span className="truncate" title={pageInfo.emails.join(', ')}>
                           {pageInfo.emails.join(', ')}
                         </span>
                       </div>
                     )}
                     {(pageInfo?.about || pageInfo?.bio || pageInfo?.description) && (
-                      <div className="md:col-span-2 lg:col-span-3 text-[11px] text-stone-500 italic bg-stone-50 px-2.5 py-1.5 rounded-lg border border-stone-100 line-clamp-2">
+                      <div className="md:col-span-2 lg:col-span-3 text-xs text-slate-600 italic bg-[#F4F8FB] px-3 py-2 rounded-xl border border-slate-200/70 line-clamp-2">
                         "{pageInfo.about || pageInfo.bio || pageInfo.description}"
                       </div>
                     )}
@@ -768,38 +755,38 @@ export const DashboardView: React.FC = () => {
 
             {/* KPI / Stats Banner */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-xs flex items-center justify-between">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold uppercase text-stone-500 tracking-wider">
+                  <span className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">
                     Publicaciones
                   </span>
-                  <p className="text-2xl font-bold text-stone-900 mt-1">{posts.length}</p>
-                  <span className="text-[11px] text-stone-500">Publicaciones registradas</span>
+                  <p className="text-2xl font-extrabold text-[#0B0F19] mt-1 font-mono tabular-nums">{posts.length}</p>
+                  <span className="text-[11px] text-slate-500">Publicaciones registradas</span>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                  <Layers className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-[#E8F8FE] text-[#0369A1] border border-[#21B6EA]/30 flex items-center justify-center">
+                  <Layers className="w-5 h-5 text-[#21B6EA]" />
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-xs flex items-center justify-between">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold uppercase text-stone-500 tracking-wider">
+                  <span className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">
                     Comentarios Totales
                   </span>
-                  <p className="text-2xl font-bold text-indigo-600 mt-1">{totalComments}</p>
-                  <span className="text-[11px] text-stone-500">Con jerarquía e hilos</span>
+                  <p className="text-2xl font-extrabold text-[#0369A1] mt-1 font-mono tabular-nums">{totalComments}</p>
+                  <span className="text-[11px] text-slate-500">Con jerarquía e hilos</span>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#0B0F19] text-[#21B6EA] flex items-center justify-center">
                   <MessageSquare className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-xs flex items-center justify-between">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold uppercase text-stone-500 tracking-wider">
+                  <span className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">
                     Última Sincronización
                   </span>
-                  <p className="text-sm font-semibold text-stone-900 mt-2 truncate">
+                  <p className="text-sm font-bold text-[#0B0F19] mt-2 truncate font-mono tabular-nums">
                     {lastSyncResult?.finished_at
                       ? new Date(lastSyncResult.finished_at).toLocaleTimeString('es-ES', {
                           hour: '2-digit',
@@ -808,60 +795,54 @@ export const DashboardView: React.FC = () => {
                         })
                       : 'Pendiente'}
                   </p>
-                  <span className="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
-                    {lastSyncResult ? '• Delta sincronizado' : '• Esperando primera sinc.'}
+                  <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1 mt-0.5">
+                    {lastSyncResult ? 'Delta sincronizado' : 'Esperando primera sinc.'}
                   </span>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/70 flex items-center justify-center">
                   <Clock className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-xs flex items-center justify-between">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold uppercase text-stone-500 tracking-wider">
+                  <span className="text-[11px] font-bold uppercase text-slate-500 tracking-wider">
                     Estado de Conexión
                   </span>
-                  <p className="text-sm font-semibold text-stone-900 mt-2 flex items-center gap-1.5">
+                  <p className="text-sm font-bold text-[#0B0F19] mt-2 flex items-center gap-1.5">
                     {isMetaConfigured ? (
-                      <>
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span className="text-emerald-700">Meta Conectado</span>
-                      </>
+                      <span className="text-emerald-700">Meta Conectado</span>
                     ) : (
-                      <>
-                        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                        <span className="text-amber-700">Falta Token</span>
-                      </>
+                      <span className="text-amber-700">Falta Token</span>
                     )}
                   </p>
-                  <span className="text-[11px] text-stone-500">Graph API v26.0</span>
+                  <span className="text-[11px] text-slate-500 font-mono">Graph API v26.0</span>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#1E293B] text-[#21B6EA] flex items-center justify-center">
                   <BarChart3 className="w-5 h-5" />
                 </div>
               </div>
             </div>
 
             {/* Search and Filters toolbar */}
-            <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-xs mb-6 flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs mb-6 flex flex-col sm:flex-row gap-3 items-center justify-between">
               <div className="relative w-full sm:w-80">
-                <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Buscar en el contenido o ID..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-9 pr-4 py-2 bg-[#F4F8FB] border border-slate-200 rounded-xl text-xs sm:text-sm text-[#0B0F19] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#21B6EA] focus:border-[#21B6EA]"
                 />
               </div>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <Filter className="w-4 h-4 text-stone-400" />
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                <Filter className="w-4 h-4 text-slate-400" />
                 <select
                   value={filterSort}
                   onChange={(e) => setFilterSort(e.target.value as any)}
-                  className="bg-stone-50 border border-stone-200 text-stone-700 text-xs rounded-lg px-2.5 py-2 focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                  className="bg-[#F4F8FB] border border-slate-200 text-[#1E293B] text-xs font-semibold rounded-xl px-2.5 py-2 focus:ring-2 focus:ring-[#21B6EA] cursor-pointer"
                 >
                   <option value="recent">Más recientes</option>
                   <option value="comments">Más comentadas</option>
@@ -871,26 +852,26 @@ export const DashboardView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('reports')}
-                  className="px-3 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                  className="px-3 py-2 bg-[#E8F8FE] hover:bg-[#21B6EA]/25 text-[#0369A1] border border-[#21B6EA]/40 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 whitespace-nowrap"
                   title="Ver Dashboard y Reporte de Sentimiento IA"
                 >
-                  <BarChart3 className="w-3.5 h-3.5 text-purple-600" />
+                  <BarChart3 className="w-3.5 h-3.5 text-[#21B6EA]" />
                   <span className="hidden sm:inline">Ver Reporte IA</span>
                   <span className="sm:hidden">Reporte</span>
                 </button>
 
                 {/* Selector de Filtro de Tiempo para Análisis IA (Último año por defecto) */}
                 <div
-                  className="flex items-center gap-1.5 bg-purple-50 border border-purple-200/80 px-2 py-1.5 rounded-lg text-xs"
+                  className="flex items-center gap-1.5 bg-[#F4F8FB] border border-slate-200 px-2.5 py-1.5 rounded-xl text-xs"
                   title="Filtro de comentarios al analizar con IA: Por defecto evalúa los comentarios del último año"
                 >
-                  <span className="text-[10px] uppercase font-bold text-purple-700 hidden xl:inline">
+                  <span className="text-[10px] uppercase font-bold text-[#0369A1] hidden xl:inline">
                     Filtro IA:
                   </span>
                   <select
                     value={aiDateFilter}
                     onChange={(e) => setAiDateFilter(e.target.value as '1year' | 'all')}
-                    className="bg-transparent text-purple-900 font-semibold text-xs focus:outline-none cursor-pointer"
+                    className="bg-transparent text-[#0B0F19] font-semibold text-xs focus:outline-none cursor-pointer"
                   >
                     <option value="1year">Último año (por defecto)</option>
                     <option value="all">Todo el historial</option>
@@ -901,10 +882,10 @@ export const DashboardView: React.FC = () => {
                   id="btn-analyze-ai-toolbar"
                   onClick={() => handleAnalyzeAi(false)}
                   disabled={isAnalyzingAi || isSyncing}
-                  className="px-3 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer shrink-0"
+                  className="px-3.5 py-2 bg-[#0B0F19] hover:bg-[#1E293B] disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer shrink-0 whitespace-nowrap"
                   title="Analizar comentarios pendientes con Inteligencia Artificial (filtro por defecto: último año)"
                 >
-                  <Sparkles className={`w-3.5 h-3.5 ${isAnalyzingAi ? 'animate-spin' : ''}`} />
+                  <Sparkles className={`w-3.5 h-3.5 text-[#21B6EA] ${isAnalyzingAi ? 'animate-spin' : ''}`} />
                   <span className="hidden sm:inline">
                     {isAnalyzingAi ? 'Analizando con IA...' : 'Analizar con IA'}
                   </span>
@@ -914,10 +895,10 @@ export const DashboardView: React.FC = () => {
                   id="btn-refresh-db-toolbar"
                   onClick={handleRefreshFromDb}
                   disabled={isLoading || isRefreshingDb}
-                  className="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 disabled:opacity-50"
+                  className="px-3 py-2 bg-white hover:bg-[#F4F8FB] text-[#1E293B] border border-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 disabled:opacity-50 whitespace-nowrap"
                   title="Recargar publicaciones y comentarios actualizados directamente desde la base de datos (PostgreSQL/Supabase)"
                 >
-                  <Database className={`w-3.5 h-3.5 text-stone-600 ${isRefreshingDb || isLoading ? 'animate-spin text-indigo-600' : ''}`} />
+                  <Database className={`w-3.5 h-3.5 text-[#0369A1] ${isRefreshingDb || isLoading ? 'animate-spin text-[#21B6EA]' : ''}`} />
                   <span className="hidden sm:inline">
                     {isRefreshingDb || isLoading ? 'Recargando BD...' : 'Refrescar desde BD'}
                   </span>
@@ -931,17 +912,17 @@ export const DashboardView: React.FC = () => {
             {/* Posts Grid */}
             {isLoading ? (
               <div className="py-20 text-center flex flex-col items-center justify-center">
-                <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mb-3" />
-                <p className="text-sm font-medium text-stone-700">Cargando publicaciones de la empresa...</p>
-                <p className="text-xs text-stone-400 mt-1">Consultando publicaciones guardadas...</p>
+                <RefreshCw className="w-8 h-8 text-[#21B6EA] animate-spin mb-3" />
+                <p className="text-sm font-semibold text-[#0B0F19]">Cargando publicaciones de la empresa...</p>
+                <p className="text-xs text-slate-500 mt-1">Consultando publicaciones guardadas...</p>
               </div>
             ) : filteredPosts.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-dashed border-stone-300 p-8 sm:p-12 text-center max-w-lg mx-auto">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-8 sm:p-12 text-center max-w-lg mx-auto">
+                <div className="w-12 h-12 rounded-2xl bg-[#0B0F19] text-[#21B6EA] flex items-center justify-center mx-auto mb-4">
                   <Layers className="w-6 h-6" />
                 </div>
-                <h3 className="text-base font-bold text-stone-900">No hay publicaciones para mostrar</h3>
-                <p className="text-xs text-stone-500 mt-1.5 leading-relaxed">
+                <h3 className="text-base font-bold text-[#0B0F19]">No hay publicaciones para mostrar</h3>
+                <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
                   {searchQuery
                     ? 'No se encontraron resultados con ese criterio de búsqueda.'
                     : 'Inicia la sincronización para descargar las publicaciones y comentarios de Facebook.'}
@@ -951,16 +932,16 @@ export const DashboardView: React.FC = () => {
                   <button
                     onClick={handleSync}
                     disabled={isSyncing}
-                    className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
+                    className="w-full sm:w-auto px-4 py-2.5 bg-[#21B6EA] hover:bg-[#14A3D6] text-[#0B0F19] rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
                   >
                     <Sparkles className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
                     <span>{isSyncing ? 'Sincronizando con IA...' : 'Sincronizar Meta con IA'}</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('config')}
-                    className="w-full sm:w-auto px-4 py-2 border border-stone-200 hover:bg-stone-50 text-stone-700 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full sm:w-auto px-4 py-2.5 border border-slate-200 hover:bg-[#F4F8FB] text-[#1E293B] rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <Sliders className="w-3.5 h-3.5 text-stone-500" />
+                    <Sliders className="w-3.5 h-3.5 text-slate-500" />
                     <span>Configuración</span>
                   </button>
                 </div>
@@ -987,7 +968,7 @@ export const DashboardView: React.FC = () => {
       </main>
 
       {/* Footer con marca Promptia.lat y Social Suite */}
-      <footer className="bg-white border-t border-stone-200 py-4 px-4 sm:px-8 text-center text-xs text-stone-500">
+      <footer className="bg-white border-t border-slate-200 py-4 px-4 sm:px-8 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <a
@@ -996,30 +977,30 @@ export const DashboardView: React.FC = () => {
               rel="noopener noreferrer"
               className="flex items-center gap-2 group hover:opacity-90 transition-opacity"
             >
-              <div className="w-5 h-5 rounded-md bg-slate-900 p-0.5 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-md bg-[#0B0F19] p-1 flex items-center justify-center">
                 <img
                   src="/promptia_logo.png"
                   alt="Promptia.lat"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="font-bold text-stone-900">Social Suite</span>
+              <span className="font-extrabold text-[#0B0F19]">Social Suite</span>
             </a>
-            <span className="text-stone-300">•</span>
+            <span className="text-slate-300" aria-hidden="true">·</span>
             <span>
               Creado por{' '}
               <a
                 href="https://promptia.lat"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors"
+                className="text-[#0369A1] hover:text-[#21B6EA] font-bold transition-colors"
               >
                 Promptia.lat
               </a>
             </span>
           </div>
-          <span className="text-[11px] text-stone-400">
-            Analítica de Redes Sociales y Sincronización Inteligente con IA
+          <span className="text-[11px] text-slate-500">
+            Tu lógica opera sola, el valor se multiplica.
           </span>
         </div>
       </footer>
@@ -1054,115 +1035,6 @@ export const DashboardView: React.FC = () => {
           await loadPosts();
         }}
       />
-
-      {/* Modal de cURL para la Fan Page de Facebook (Meta Graph API v21.0) */}
-      {isShowPageCurlModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-xl border border-stone-200 w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-150">
-            <div className="px-5 py-4 border-b border-stone-200 flex items-center justify-between bg-stone-50">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
-                  <Terminal className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-bold text-stone-900">
-                    cURL de Fan Page en Meta Graph API v21.0
-                  </h3>
-                  <p className="text-xs text-stone-500">
-                    Obtención de campos oficiales: name, followers, category, website, phone, etc.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsShowPageCurlModal(false)}
-                className="p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-200/60 rounded-lg transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-5 space-y-4">
-              <div className="text-xs text-stone-600 leading-relaxed">
-                Este es el comando cURL que consulta la información extendida de la Fan Page (<code className="font-mono text-stone-900 font-bold">{company?.meta_page_id || '113022817972331'}</code>) usando el <code className="font-mono text-stone-900">meta_token</code> de la tabla <strong className="font-mono text-indigo-700">companies</strong>:
-              </div>
-
-              <div className="relative group bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs overflow-x-auto shadow-inner border border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const curlCmd = getPageInfoCurl(company?.meta_page_id, company?.meta_token);
-                    navigator.clipboard.writeText(curlCmd);
-                    setCopiedPageCurl(true);
-                    setTimeout(() => setCopiedPageCurl(false), 2000);
-                  }}
-                  className="absolute top-3 right-3 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg flex items-center gap-1.5 border border-slate-700 transition-colors cursor-pointer shadow-xs"
-                  title="Copiar cURL al portapapeles"
-                >
-                  {copiedPageCurl ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-300 font-sans font-semibold">Copiado</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="font-sans font-medium">Copiar cURL</span>
-                    </>
-                  )}
-                </button>
-                <pre className="whitespace-pre-wrap break-all pr-24 leading-relaxed text-indigo-200">
-                  {getPageInfoCurl(company?.meta_page_id, company?.meta_token)}
-                </pre>
-              </div>
-
-              {/* Vista previa de los datos obtenidos actualmente */}
-              {pageInfo && (
-                <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 text-xs space-y-2">
-                  <div className="flex items-center justify-between font-semibold text-stone-700 border-b border-stone-200 pb-1.5">
-                    <span>Datos actualmente cargados:</span>
-                    <span className="text-[11px] text-blue-600 font-mono">Facebook Graph API v21.0</span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[11px]">
-                    <div><span className="text-stone-400 block">ID:</span> <span className="font-mono font-semibold text-stone-900">{pageInfo.id}</span></div>
-                    <div><span className="text-stone-400 block">Nombre:</span> <span className="font-semibold text-stone-900">{pageInfo.name}</span></div>
-                    <div><span className="text-stone-400 block">Username:</span> <span className="text-stone-800">@{pageInfo.username || '—'}</span></div>
-                    <div><span className="text-stone-400 block">Seguidores / Fans:</span> <span className="text-stone-800 font-medium">{(pageInfo.followers_count ?? pageInfo.fan_count)?.toLocaleString() || '—'}</span></div>
-                    <div><span className="text-stone-400 block">Categoría:</span> <span className="text-stone-800">{pageInfo.category || '—'}</span></div>
-                    <div><span className="text-stone-400 block">Estado:</span> <span className="text-stone-800">{pageInfo.is_published ? 'Publicada' : 'No publicada'}</span></div>
-                    {pageInfo.phone && <div><span className="text-stone-400 block">Teléfono:</span> <span className="text-stone-800">{pageInfo.phone}</span></div>}
-                    {pageInfo.whatsapp_number && <div><span className="text-stone-400 block">WhatsApp:</span> <span className="text-stone-800">{pageInfo.whatsapp_number}</span></div>}
-                    {pageInfo.website && <div className="sm:col-span-2"><span className="text-stone-400 block">Sitio Web:</span> <a href={pageInfo.website} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">{pageInfo.website}</a></div>}
-                    {pageInfo.single_line_address && <div className="sm:col-span-3"><span className="text-stone-400 block">Dirección:</span> <span className="text-stone-800">{pageInfo.single_line_address}</span></div>}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center justify-between pt-2">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    if (company?.meta_page_id) {
-                      const info = await fetchMetaPageInfo(company.meta_page_id, company.meta_token);
-                      if (info) setPageInfo(info);
-                    }
-                  }}
-                  className="px-3.5 py-2 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 transition-colors flex items-center gap-1.5 cursor-pointer"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  <span>Volver a consultar Graph API</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsShowPageCurlModal(false)}
-                  className="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-obsidian: #0B0F19;
+  --color-navy-ink: #1E293B;
+  --color-capri: #21B6EA;
+  --color-capri-hover: #14A3D6;
+  --color-capri-ink: #0369A1;
+  --color-capri-ice: #E8F8FE;
+  --color-pure-white: #FFFFFF;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: #F4F8FB;
+    color: #0B0F19;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #F4F8FB;
+    color: #0B0F19;
+  }
+
+  code,
+  pre,
+  kbd {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Digital Twilight & Algorithmic Schematics surface from Promptia.lat Brand Book */
+.bg-brand-twilight {
+  background-color: #0B0F19;
+  background-image:
+    radial-gradient(circle at 18% 18%, rgba(33, 182, 234, 0.16), transparent 44%),
+    radial-gradient(circle at 82% 84%, rgba(30, 41, 59, 0.85), transparent 52%),
+    linear-gradient(to right, rgba(33, 182, 234, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(33, 182, 234, 0.045) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+}
+
+.bg-brand-capri-tint {
+  background-color: #E8F8FE;
+}

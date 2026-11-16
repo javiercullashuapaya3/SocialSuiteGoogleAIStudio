@@ -178,29 +178,31 @@ export const SqlSchemaModal: React.FC<SqlSchemaModalProps> = ({ isOpen, onClose 
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      <div className="bg-stone-950 w-full max-w-3xl rounded-2xl shadow-2xl border border-stone-800 text-stone-200 overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 bg-[#0B0F19]/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+      <div className="bg-[#0B0F19] w-full max-w-3xl rounded-2xl shadow-2xl border border-slate-800 text-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-stone-800 flex items-center justify-between bg-stone-900/90">
-          <div className="flex items-center gap-2">
-            <Database className="w-5 h-5 text-indigo-400" />
+        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-[#1E293B]/70">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#21B6EA]/15 border border-[#21B6EA]/30 flex items-center justify-center">
+              <Database className="w-4 h-4 text-[#21B6EA]" />
+            </div>
             <div>
-              <h3 className="font-semibold text-white text-base">Esquema SQL de Base de Datos</h3>
-              <p className="text-xs text-stone-400">Estructura relacional de tablas</p>
+              <h3 className="font-bold text-white text-base tracking-tight">Esquema SQL de Base de Datos</h3>
+              <p className="text-xs text-slate-400">Estructura relacional de tablas</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={copyToClipboard}
-              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs"
+              className="px-3.5 py-1.5 bg-[#21B6EA] hover:bg-[#14A3D6] text-[#0B0F19] rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? '¡Copiado!' : 'Copiar SQL'}</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 text-stone-400 hover:text-white hover:bg-stone-800 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -208,20 +210,20 @@ export const SqlSchemaModal: React.FC<SqlSchemaModalProps> = ({ isOpen, onClose 
         </div>
 
         {/* Code Content */}
-        <div className="p-4 overflow-y-auto flex-1 font-mono text-xs text-emerald-400 bg-stone-950">
-          <p className="text-stone-400 text-xs mb-3 font-sans">
+        <div className="p-4 overflow-y-auto flex-1 font-mono text-xs text-[#21B6EA] bg-[#0B0F19]">
+          <p className="text-slate-400 text-xs mb-3 font-sans">
             Script relacional para inicializar las tablas necesarias con claves foráneas, índices optimizados y soporte para multi-empresa:
           </p>
-          <pre className="p-4 bg-black/60 rounded-xl border border-stone-800 leading-relaxed overflow-x-auto selection:bg-indigo-900 selection:text-white">
+          <pre className="p-4 bg-[#1E293B]/45 rounded-xl border border-slate-800 leading-relaxed overflow-x-auto selection:bg-[#21B6EA]/30 selection:text-white">
             {SQL_SCHEMA_CODE}
           </pre>
         </div>
 
-        <div className="px-5 py-3 border-t border-stone-800 bg-stone-900 text-stone-400 text-xs flex items-center justify-between">
+        <div className="px-5 py-3 border-t border-slate-800 bg-[#1E293B]/60 text-slate-400 text-xs flex items-center justify-between">
           <span>Incluye soporte para `companies`, `user_companies`, `profiles`, `meta_posts` y `meta_comments`</span>
           <button
             onClick={onClose}
-            className="px-3 py-1 bg-stone-800 hover:bg-stone-700 text-white rounded text-xs transition-colors"
+            className="px-3.5 py-1.5 bg-[#1E293B] hover:bg-slate-700 text-white border border-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
           >
             Cerrar
           </button>

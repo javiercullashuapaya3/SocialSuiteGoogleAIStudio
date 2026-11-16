@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MetaPost, MetaPageInfo } from '../types';
-import { MessageSquare, ExternalLink, Calendar, Clock, Sparkles, BarChart2, Database, Facebook, BadgeCheck } from 'lucide-react';
+import { MessageSquare, ExternalLink, Calendar, Clock, Sparkles, BarChart2, Database, BadgeCheck } from 'lucide-react';
 import { isGenericPlaceholderName } from '../services/metaSyncService';
 
 interface PostCardProps {
@@ -12,7 +12,6 @@ interface PostCardProps {
   isRefreshingDb?: boolean;
   pageInfo?: MetaPageInfo | null;
   companyName?: string;
-  // Propiedades opcionales para retrocompatibilidad
   onAnalyzeAi?: (post: MetaPost) => void;
   isAnalyzingAi?: boolean;
   onSyncComments?: (post: MetaPost) => void;
@@ -45,7 +44,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const interestFallback = post.raw_data?.interest_distribution;
   const priorityFallback = post.raw_data?.priority_distribution;
 
-  // 1. DIMENSIÓN: SENTIMIENTO (5 categorías exactas sin doble conteo por falsy 0)
+  // 1. DIMENSIÓN: SENTIMIENTO (5 categorías)
   const sentimientoBars = detailed?.sentimiento
     ? [
         {
@@ -66,8 +65,8 @@ export const PostCard: React.FC<PostCardProps> = ({
           category: 'NEUTRO',
           short: 'Neutro',
           count: Number(detailed.sentimiento['NEUTRO'] ?? detailed.sentimiento['NEUTRAL'] ?? 0),
-          color: 'bg-stone-400',
-          textColor: 'text-stone-600',
+          color: 'bg-slate-400',
+          textColor: 'text-slate-600',
         },
         {
           category: 'POSITIVO',
@@ -103,8 +102,8 @@ export const PostCard: React.FC<PostCardProps> = ({
           category: 'NEUTRO',
           short: 'Neutro',
           count: Number(sentimentFallback?.neutral ?? 0),
-          color: 'bg-stone-400',
-          textColor: 'text-stone-600',
+          color: 'bg-slate-400',
+          textColor: 'text-slate-600',
         },
         {
           category: 'POSITIVO',
@@ -122,43 +121,43 @@ export const PostCard: React.FC<PostCardProps> = ({
         },
       ];
 
-  // 2. DIMENSIÓN: INTERÉS (5 categorías exactas sin doble conteo)
+  // 2. DIMENSIÓN: INTERÉS (Escala Brand Book: Slate -> Capri Blue -> Navy Ink -> Obsidian Black)
   const interesBars = detailed?.interes
     ? [
         {
           category: 'MUY BAJO',
           short: 'M.Bajo',
           count: Number(detailed.interes['MUY BAJO'] ?? detailed.interes['NINGUNO'] ?? 0),
-          color: 'bg-stone-400',
-          textColor: 'text-stone-600',
+          color: 'bg-slate-400',
+          textColor: 'text-slate-600',
         },
         {
           category: 'BAJO',
           short: 'Bajo',
           count: Number(detailed.interes['BAJO'] ?? 0),
-          color: 'bg-sky-400',
-          textColor: 'text-sky-600',
+          color: 'bg-sky-300',
+          textColor: 'text-slate-600',
         },
         {
           category: 'MEDIO',
           short: 'Medio',
           count: Number(detailed.interes['MEDIO'] ?? 0),
-          color: 'bg-blue-500',
-          textColor: 'text-blue-600',
+          color: 'bg-[#21B6EA]',
+          textColor: 'text-[#0369A1]',
         },
         {
           category: 'ALTO',
           short: 'Alto',
           count: Number(detailed.interes['ALTO'] ?? 0),
-          color: 'bg-indigo-600',
-          textColor: 'text-indigo-600',
+          color: 'bg-[#1E293B]',
+          textColor: 'text-[#1E293B]',
         },
         {
           category: 'MUY ALTO',
           short: 'M.Alto',
           count: Number(detailed.interes['MUY ALTO'] ?? 0),
-          color: 'bg-purple-600',
-          textColor: 'text-purple-700',
+          color: 'bg-[#0B0F19]',
+          textColor: 'text-[#0B0F19]',
         },
       ]
     : [
@@ -166,48 +165,48 @@ export const PostCard: React.FC<PostCardProps> = ({
           category: 'MUY BAJO',
           short: 'M.Bajo',
           count: Number(interestFallback?.muy_bajo ?? 0),
-          color: 'bg-stone-400',
-          textColor: 'text-stone-600',
+          color: 'bg-slate-400',
+          textColor: 'text-slate-600',
         },
         {
           category: 'BAJO',
           short: 'Bajo',
           count: Number(interestFallback?.bajo ?? 0),
-          color: 'bg-sky-400',
-          textColor: 'text-sky-600',
+          color: 'bg-sky-300',
+          textColor: 'text-slate-600',
         },
         {
           category: 'MEDIO',
           short: 'Medio',
           count: Number(interestFallback?.medio ?? 0),
-          color: 'bg-blue-500',
-          textColor: 'text-blue-600',
+          color: 'bg-[#21B6EA]',
+          textColor: 'text-[#0369A1]',
         },
         {
           category: 'ALTO',
           short: 'Alto',
           count: Number(interestFallback?.alto ?? 0),
-          color: 'bg-indigo-600',
-          textColor: 'text-indigo-600',
+          color: 'bg-[#1E293B]',
+          textColor: 'text-[#1E293B]',
         },
         {
           category: 'MUY ALTO',
           short: 'M.Alto',
           count: Number(interestFallback?.muy_alto ?? 0),
-          color: 'bg-purple-600',
-          textColor: 'text-purple-700',
+          color: 'bg-[#0B0F19]',
+          textColor: 'text-[#0B0F19]',
         },
       ];
 
-  // 3. DIMENSIÓN: PRIORIDAD (5 categorías exactas sin doble conteo)
+  // 3. DIMENSIÓN: PRIORIDAD
   const prioridadBars = detailed?.prioridad
     ? [
         {
           category: 'MUY BAJA',
           short: 'M.Baja',
           count: Number(detailed.prioridad['MUY BAJA'] ?? 0),
-          color: 'bg-stone-400',
-          textColor: 'text-stone-600',
+          color: 'bg-slate-400',
+          textColor: 'text-slate-600',
         },
         {
           category: 'BAJA',
@@ -243,8 +242,8 @@ export const PostCard: React.FC<PostCardProps> = ({
           category: 'MUY BAJA',
           short: 'M.Baja',
           count: Number(priorityFallback?.muy_baja ?? 0),
-          color: 'bg-stone-400',
-          textColor: 'text-stone-600',
+          color: 'bg-slate-400',
+          textColor: 'text-slate-600',
         },
         {
           category: 'BAJA',
@@ -282,7 +281,6 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   const hasAnyAiData = totalSentimiento > 0 || totalInteres > 0 || totalPrioridad > 0;
 
-  // Seleccionar barras de la dimensión activa
   const currentBars =
     activeDimension === 'SENTIMIENTO'
       ? sentimientoBars
@@ -297,10 +295,7 @@ export const PostCard: React.FC<PostCardProps> = ({
       ? totalInteres
       : totalPrioridad;
 
-  // El conteo total de comentarios para mostrar en el icono inferior:
-  // Se sincroniza con el mayor valor verificado entre la base de datos y la evaluación
   const effectiveCommentsCount = Math.max(post.comments_count || 0, currentTotal);
-
   const maxVal = Math.max(...currentBars.map((b) => b.count), 1);
 
   const formatDate = (dateStr: string | null | undefined) => {
@@ -324,7 +319,6 @@ export const PostCard: React.FC<PostCardProps> = ({
     return new Date(post.updated_time).getTime() - new Date(post.created_time).getTime() > 60000;
   };
 
-  // Acción unificada para el botón de la tarjeta con IA
   const handleRefreshClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onRefreshPostAi) {
@@ -336,7 +330,6 @@ export const PostCard: React.FC<PostCardProps> = ({
     }
   };
 
-  // Acción para refrescar únicamente de la base de datos (sin IA)
   const handleRefreshDbClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onRefreshPostDb) {
@@ -349,20 +342,21 @@ export const PostCard: React.FC<PostCardProps> = ({
   return (
     <div
       id={`post-card-${post.meta_post_id}`}
-      className="bg-white rounded-xl border border-stone-200 overflow-hidden shadow-xs hover:border-indigo-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between"
+      className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs hover:border-[#21B6EA] hover:shadow-md transition-all duration-200 flex flex-col justify-between"
     >
       <div>
         {/* Attachment preview if image exists */}
         {imageUrl && (
-          <div className="relative h-44 w-full bg-stone-100 overflow-hidden border-b border-stone-100">
+          <div className="relative h-44 w-full bg-[#0B0F19] overflow-hidden border-b border-slate-200">
             <img
               src={imageUrl}
-              alt="Post attachment"
+              alt="Adjunto de publicación"
+              referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
               loading="lazy"
             />
             {attachment?.type && (
-              <span className="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-900/70 text-white backdrop-blur-xs uppercase">
+              <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#0B0F19]/80 text-white backdrop-blur-xs uppercase tracking-wider">
                 {attachment.type}
               </span>
             )}
@@ -384,39 +378,39 @@ export const PostCard: React.FC<PostCardProps> = ({
               (companyName?.toLowerCase().includes('elitec') ? '/elitec_logo.png' : undefined);
 
             return (
-              <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-stone-100">
-                <div className="flex items-center gap-2 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-slate-100">
+                <div className="flex items-center gap-2.5 min-w-0">
                   {avatarSrc ? (
                     <img
                       src={avatarSrc}
                       alt={authorDisplayName}
-                      className="w-7 h-7 rounded-full object-cover border border-stone-200 shadow-2xs shrink-0"
+                      className="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = 'none';
                       }}
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#0B0F19] text-[#21B6EA] font-bold text-xs flex items-center justify-center shrink-0">
                       {authorDisplayName.charAt(0).toUpperCase()}
                     </div>
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-1">
-                      <span className="font-bold text-stone-900 text-xs truncate max-w-[170px]" title={authorDisplayName}>
+                      <span className="font-bold text-[#0B0F19] text-xs truncate max-w-[170px]" title={authorDisplayName}>
                         {authorDisplayName}
                       </span>
                       {(pageInfo?.verification_status === 'blue_verified' || pageInfo?.verification_status === 'verified') && (
-                        <BadgeCheck className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                        <BadgeCheck className="w-3.5 h-3.5 text-[#21B6EA] shrink-0" />
                       )}
                     </div>
-                    <span className="text-[10px] text-stone-400 block">
+                    <span className="text-[10px] text-slate-500 block font-mono tabular-nums">
                       {formatDate(post.created_time)}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <span className="text-[10px] font-mono text-stone-600 bg-stone-100 px-1.5 py-0.2 rounded">
+                  <span className="text-[10px] font-mono text-slate-500 tabular-nums">
                     ID: {post.meta_post_id.slice(-8)}
                   </span>
                   {post.permalink_url && (
@@ -424,7 +418,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                       href={post.permalink_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-stone-400 hover:text-blue-600 transition-colors p-1"
+                      className="text-slate-400 hover:text-[#21B6EA] transition-colors p-1"
                       title="Abrir publicación en Facebook"
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -436,47 +430,45 @@ export const PostCard: React.FC<PostCardProps> = ({
             );
           })()}
 
-          {/* Badges de estado de IA */}
-          <div className="flex items-center justify-between gap-2 mb-2.5">
-            <div className="flex items-center gap-1.5 flex-wrap">
+          {/* Metadatos limpios de estado IA (sin exceso de píldoras) */}
+          {(hasAnyAiData || isRecentlyUpdated()) && (
+            <div className="flex items-center gap-2 text-[11px] font-semibold mb-2">
               {hasAnyAiData && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-purple-50 text-purple-700 border border-purple-200">
-                  <Sparkles className="w-2.5 h-2.5 text-purple-600" /> IA
+                <span className="inline-flex items-center gap-1 text-[#0369A1]">
+                  <Sparkles className="w-3 h-3 text-[#21B6EA]" />
+                  <span>Analizado con IA</span>
                 </span>
+              )}
+              {hasAnyAiData && isRecentlyUpdated() && (
+                <span className="text-slate-300" aria-hidden="true">·</span>
               )}
               {isRecentlyUpdated() && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                  Modificado
-                </span>
+                <span className="text-amber-700">Modificado</span>
               )}
             </div>
-          </div>
+          )}
 
           {/* Post message */}
-          <p className="text-stone-800 text-sm line-clamp-3 leading-relaxed mb-3">
-            {post.message || <span className="italic text-stone-400">Publicación sin texto</span>}
+          <p className="text-[#1E293B] text-sm line-clamp-3 leading-relaxed mb-3.5">
+            {post.message || <span className="italic text-slate-400">Publicación sin texto</span>}
           </p>
 
-          {/* ======================================================== */}
-          {/* GRÁFICO DE BARRAS VERTICALES POR DIMENSIÓN Y CATEGORÍAS */}
-          {/* ======================================================== */}
-          <div className="mb-3 p-3 bg-stone-50/80 rounded-xl border border-stone-200/90">
-            {/* Cabecera con selector de dimensión (Sentimiento, Interés, Prioridad) */}
-            <div className="flex items-center justify-between gap-1 mb-2.5 pb-2 border-b border-stone-200/70">
-              <span className="text-[10px] font-bold text-stone-500 uppercase flex items-center gap-1">
-                <BarChart2 className="w-3 h-3 text-indigo-600" />
-                <span>Dimensión:</span>
+          {/* Gráfico de barras por dimensión */}
+          <div className="mb-3 p-3 bg-[#F4F8FB] rounded-xl border border-slate-200/80">
+            <div className="flex items-center justify-between gap-1 mb-2.5 pb-2 border-b border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
+                <BarChart2 className="w-3 h-3 text-[#21B6EA]" />
+                <span>Dimensión</span>
               </span>
 
-              {/* Selector de pestañas para cambiar de dimensión */}
-              <div className="flex items-center bg-stone-200/70 p-0.5 rounded-lg text-[10px] font-bold">
+              <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-[10px] font-bold">
                 <button
                   type="button"
                   onClick={() => setActiveDimension('SENTIMIENTO')}
                   className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
                     activeDimension === 'SENTIMIENTO'
-                      ? 'bg-white text-indigo-900 shadow-2xs font-extrabold'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-white text-[#0B0F19] shadow-2xs font-extrabold'
+                      : 'text-slate-600 hover:text-[#0B0F19]'
                   }`}
                   title="Ver gráfico de Sentimiento (5 categorías)"
                 >
@@ -487,8 +479,8 @@ export const PostCard: React.FC<PostCardProps> = ({
                   onClick={() => setActiveDimension('INTERES')}
                   className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
                     activeDimension === 'INTERES'
-                      ? 'bg-white text-indigo-900 shadow-2xs font-extrabold'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-white text-[#0B0F19] shadow-2xs font-extrabold'
+                      : 'text-slate-600 hover:text-[#0B0F19]'
                   }`}
                   title="Ver gráfico de Interés (5 categorías)"
                 >
@@ -499,8 +491,8 @@ export const PostCard: React.FC<PostCardProps> = ({
                   onClick={() => setActiveDimension('PRIORIDAD')}
                   className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
                     activeDimension === 'PRIORIDAD'
-                      ? 'bg-white text-indigo-900 shadow-2xs font-extrabold'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-white text-[#0B0F19] shadow-2xs font-extrabold'
+                      : 'text-slate-600 hover:text-[#0B0F19]'
                   }`}
                   title="Ver gráfico de Prioridad (5 categorías)"
                 >
@@ -509,7 +501,6 @@ export const PostCard: React.FC<PostCardProps> = ({
               </div>
             </div>
 
-            {/* GRÁFICO TIPO BARRAS VERTICALES (5 columnas) */}
             <div className="pt-1">
               <div className="flex items-end justify-between gap-1.5 h-20 px-1">
                 {currentBars.map((bar) => {
@@ -522,29 +513,26 @@ export const PostCard: React.FC<PostCardProps> = ({
                       key={bar.category}
                       className="flex-1 flex flex-col items-center justify-end h-full group"
                     >
-                      {/* Valor numérico encima de la barra vertical */}
                       <span
-                        className={`text-[10px] font-bold mb-1 transition-transform group-hover:scale-110 ${
-                          bar.count > 0 ? bar.textColor : 'text-stone-300'
+                        className={`text-[10px] font-bold font-mono tabular-nums mb-1 transition-transform group-hover:scale-110 ${
+                          bar.count > 0 ? bar.textColor : 'text-slate-300'
                         }`}
                         title={`${bar.category}: ${bar.count} (${pct.toFixed(1)}%)`}
                       >
                         {bar.count}
                       </span>
 
-                      {/* Contenedor y Pista de la barra vertical */}
-                      <div className="w-full max-w-[28px] h-12 bg-stone-200/50 rounded-t-md overflow-hidden flex flex-col justify-end p-0.5">
+                      <div className="w-full max-w-[28px] h-12 bg-slate-200/60 rounded-t-md overflow-hidden flex flex-col justify-end p-0.5">
                         <div
                           style={{ height: `${barHeightPct}%` }}
-                          className={`w-full rounded-t-xs transition-all duration-300 shadow-2xs ${
-                            bar.count > 0 ? bar.color : 'bg-stone-300/40'
+                          className={`w-full rounded-t-xs transition-all duration-300 ${
+                            bar.count > 0 ? bar.color : 'bg-slate-300/40'
                           }`}
                         />
                       </div>
 
-                      {/* Etiqueta de la categoría abajo de la barra vertical */}
                       <span
-                        className="text-[9px] font-semibold text-stone-600 tracking-tight mt-1 text-center truncate max-w-full block leading-none"
+                        className="text-[9px] font-semibold text-slate-600 tracking-tight mt-1 text-center truncate max-w-full block leading-none"
                         title={`${bar.category}: ${bar.count} comentarios`}
                       >
                         {bar.short}
@@ -554,13 +542,12 @@ export const PostCard: React.FC<PostCardProps> = ({
                 })}
               </div>
 
-              {/* Subtítulo informativo del gráfico */}
-              <div className="mt-2 pt-1.5 border-t border-stone-200/50 flex items-center justify-between text-[10px] text-stone-500">
+              <div className="mt-2 pt-1.5 border-t border-slate-200/70 flex items-center justify-between text-[10px] text-slate-500">
                 <span>
                   Total evaluados:{' '}
-                  <strong className="text-stone-800">{currentTotal}</strong>
+                  <strong className="text-[#0B0F19] font-mono tabular-nums">{currentTotal}</strong>
                 </span>
-                <span className="text-[9px] text-stone-400 uppercase font-medium">
+                <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">
                   {activeDimension}
                 </span>
               </div>
@@ -568,14 +555,14 @@ export const PostCard: React.FC<PostCardProps> = ({
           </div>
 
           {/* Timestamps */}
-          <div className="space-y-1 text-[11px] text-stone-500 pt-2 border-t border-stone-100">
-            <div className="flex items-center gap-1.5">
-              <Calendar className="w-3 h-3 text-stone-400 shrink-0" />
+          <div className="space-y-1 text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+            <div className="flex items-center gap-1.5 font-mono tabular-nums">
+              <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
               <span>Creado: {formatDate(post.created_time)}</span>
             </div>
             {post.updated_time && post.updated_time !== post.created_time && (
-              <div className="flex items-center gap-1.5 text-stone-600">
-                <Clock className="w-3 h-3 text-stone-400 shrink-0" />
+              <div className="flex items-center gap-1.5 text-slate-600 font-mono tabular-nums">
+                <Clock className="w-3 h-3 text-slate-400 shrink-0" />
                 <span>Modificado: {formatDate(post.updated_time)}</span>
               </div>
             )}
@@ -583,51 +570,46 @@ export const PostCard: React.FC<PostCardProps> = ({
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* FOOTER: BOTONES "Refrescar BD" y "Refrescar Post con IA" */}
-      {/* ======================================================== */}
-      <div className="px-3.5 py-2.5 bg-stone-50/90 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2">
+      {/* Footer de Tarjeta */}
+      <div className="px-3.5 py-2.5 bg-[#F4F8FB] border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          {/* Conteo de comentarios sincronizado */}
           <div
-            className="flex items-center gap-1 text-xs font-bold text-stone-700 bg-white px-2 py-1.5 rounded-lg border border-stone-200 shadow-2xs"
+            className="flex items-center gap-1 text-xs font-bold text-[#0B0F19] bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 font-mono tabular-nums"
             title={`${effectiveCommentsCount} comentarios`}
           >
-            <MessageSquare className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+            <MessageSquare className="w-3.5 h-3.5 text-[#21B6EA] shrink-0" />
             <span>{effectiveCommentsCount}</span>
           </div>
 
-          {/* BOTÓN: "Refrescar BD" (sólo este post_id directamente de la Base de Datos) */}
           {onRefreshPostDb && (
             <button
               type="button"
               onClick={handleRefreshDbClick}
               disabled={activeLoading || isRefreshingDb}
-              className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-stone-200 text-stone-700 bg-white hover:bg-stone-100 hover:text-stone-900 disabled:opacity-50 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+              className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-200 text-[#1E293B] bg-white hover:bg-slate-100 hover:text-[#0B0F19] disabled:opacity-50 flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Recargar datos y comentarios de este post directamente desde la Base de Datos (sin llamar a la IA)"
             >
-              <Database className={`w-3.5 h-3.5 text-stone-500 ${isRefreshingDb ? 'animate-spin text-indigo-600' : ''}`} />
+              <Database className={`w-3.5 h-3.5 text-[#0369A1] ${isRefreshingDb ? 'animate-spin text-[#21B6EA]' : ''}`} />
               <span>{isRefreshingDb ? 'Leyendo BD...' : 'Refrescar BD'}</span>
             </button>
           )}
 
-          {/* BOTÓN: "Refrescar Post con IA" */}
           <button
             type="button"
             onClick={handleRefreshClick}
             disabled={activeLoading || isRefreshingDb}
-            className="text-xs font-bold px-3 py-1.5 rounded-lg border border-purple-200 text-purple-700 bg-purple-50 hover:bg-purple-100 disabled:opacity-50 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#0B0F19] hover:bg-[#1E293B] text-white disabled:opacity-50 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
             title="Refrescar comentarios y análisis de esta publicación con IA mediante el webhook oficial"
           >
-            <Sparkles className={`w-3.5 h-3.5 text-purple-600 ${activeLoading ? 'animate-spin' : ''}`} />
-            <span>{activeLoading ? 'Refrescando con IA...' : 'Refrescar Post con IA'}</span>
+            <Sparkles className={`w-3.5 h-3.5 text-[#21B6EA] ${activeLoading ? 'animate-spin' : ''}`} />
+            <span>{activeLoading ? 'Refrescando...' : 'Refrescar Post con IA'}</span>
           </button>
         </div>
 
         <button
           type="button"
           onClick={() => onSelect(post)}
-          className="text-xs font-semibold text-stone-600 hover:text-indigo-600 hover:underline px-1.5 py-1 cursor-pointer shrink-0"
+          className="text-xs font-bold text-[#0369A1] hover:text-[#0B0F19] hover:underline px-1.5 py-1 cursor-pointer shrink-0"
         >
           Ver detalle &rarr;
         </button>

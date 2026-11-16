@@ -177,34 +177,34 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
   return (
     <div id="company-config-container" className="max-w-4xl mx-auto space-y-6">
       {/* Top Banner */}
-      <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+          <div className="flex items-center gap-2.5 mb-1">
+            <span className="p-1.5 rounded-lg bg-[#0B0F19] text-[#21B6EA] flex items-center justify-center">
               <Facebook className="w-4 h-4" />
             </span>
-            <h2 className="text-lg font-bold text-stone-900 tracking-tight">
+            <h2 className="text-lg font-extrabold text-[#0B0F19] tracking-tight">
               Configuración de Conexión de Meta
             </h2>
           </div>
-          <p className="text-xs text-stone-500">
-            Ingresa tu <strong className="text-stone-700">Meta Page ID</strong> y el{' '}
-            <strong className="text-stone-700">Meta Access Token</strong> para sincronizar automáticamente las publicaciones y comentarios de tu página de Facebook.
+          <p className="text-xs text-slate-500">
+            Ingresa tu <strong className="text-[#1E293B]">Meta Page ID</strong> y el{' '}
+            <strong className="text-[#1E293B]">Meta Access Token</strong> para sincronizar automáticamente las publicaciones y comentarios de tu página de Facebook.
           </p>
         </div>
 
         {/* Empresa activa para la configuración */}
-        <div className="shrink-0 flex items-center gap-2.5 bg-stone-50 px-3.5 py-2.5 rounded-xl border border-stone-200">
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
+        <div className="shrink-0 flex items-center gap-2.5 bg-[#F4F8FB] px-3.5 py-2.5 rounded-xl border border-slate-200">
+          <div className="w-8 h-8 rounded-lg bg-[#E8F8FE] border border-[#21B6EA]/30 text-[#0369A1] flex items-center justify-center font-bold text-xs shrink-0">
             <Building2 className="w-4 h-4" />
           </div>
           <div className="text-xs">
-            <label className="text-[10px] text-stone-500 font-semibold block uppercase tracking-wider">
+            <label className="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">
               Empresa activa:
             </label>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="font-bold text-stone-900 text-xs sm:text-sm">{company?.name || 'Mi Empresa'}</span>
-              <span className="text-[10px] font-mono text-stone-500 bg-stone-100 px-1.5 py-0.2 rounded border border-stone-200">
+              <span className="font-bold text-[#0B0F19] text-xs sm:text-sm">{company?.name || 'Mi Empresa'}</span>
+              <span className="text-[10px] font-mono tabular-nums text-slate-600 bg-white px-1.5 py-0.5 rounded border border-slate-200">
                 ID: {company?.client_id || company?.id}
               </span>
             </div>
@@ -214,22 +214,22 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
 
       {/* Tarjeta con el Nombre de la Fan Page Oficial (si está configurada) */}
       {pageInfo && pageInfo.name && (
-        <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/50 p-4 rounded-xl border border-blue-200/80 flex items-center justify-between gap-3 text-xs">
+        <div className="bg-brand-capri-tint p-4 rounded-xl border border-[#21B6EA]/35 flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#0B0F19] text-[#21B6EA] flex items-center justify-center font-bold shadow-xs shrink-0">
               <Facebook className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-stone-900 text-sm">{pageInfo.name}</span>
-                <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full border border-blue-200">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-bold text-[#0B0F19] text-sm">{pageInfo.name}</span>
+                <span className="text-[10px] font-bold bg-[#E8F8FE] text-[#0369A1] px-2 py-0.5 rounded-md border border-[#21B6EA]/30">
                   Página de Facebook Conectada
                 </span>
               </div>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                Page ID: <code className="font-mono text-stone-800 font-semibold">{pageInfo.id}</code>
-                {pageInfo.category && ` • ${pageInfo.category}`}
-                {pageInfo.fan_count !== undefined && ` • ${pageInfo.fan_count.toLocaleString()} seguidores`}
+              <p className="text-[11px] text-slate-600 mt-0.5 font-mono tabular-nums">
+                Page ID: <code className="text-[#0B0F19] font-bold">{pageInfo.id}</code>
+                {pageInfo.category && <span className="font-sans"> · {pageInfo.category}</span>}
+                {pageInfo.fan_count !== undefined && ` · ${pageInfo.fan_count.toLocaleString()} seguidores`}
               </p>
             </div>
           </div>
@@ -239,7 +239,7 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
               href={pageInfo.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-semibold text-blue-700 hover:text-blue-900 bg-white px-3 py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors shrink-0"
+              className="text-xs font-bold text-[#0369A1] hover:text-[#0B0F19] bg-white px-3 py-1.5 rounded-lg border border-slate-200 hover:border-[#21B6EA] hover:bg-[#E8F8FE] transition-colors shrink-0"
             >
               Visitar Página
             </a>
@@ -248,18 +248,18 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
       )}
 
       {/* Estado actual de credenciales guardadas (con token enmascarado por defecto) */}
-      <div className="bg-stone-100/70 p-4 rounded-xl border border-stone-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="bg-[#F4F8FB] p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span className="font-semibold text-stone-700">
-            Estado de credenciales para <span className="text-stone-900 font-bold">{company?.name}</span>:
+          <span className="font-semibold text-[#1E293B]">
+            Estado de credenciales para <span className="text-[#0B0F19] font-bold">{company?.name}</span>:
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <span className="flex items-center gap-1">
-            <span className="text-stone-500">Page ID:</span>
+            <span className="text-slate-500">Page ID:</span>
             {company?.meta_page_id ? (
-              <code className="font-mono bg-white px-2 py-0.5 rounded border border-stone-200 text-stone-900 font-bold">
+              <code className="font-mono tabular-nums bg-white px-2 py-0.5 rounded border border-slate-200 text-[#0B0F19] font-bold">
                 {company.meta_page_id}
               </code>
             ) : (
@@ -270,21 +270,21 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
           </span>
 
           <span className="flex items-center gap-1.5">
-            <span className="text-stone-500">Token:</span>
+            <span className="text-slate-500">Token:</span>
             {company?.meta_token ? (
-              <div className="inline-flex items-center gap-1.5 bg-white px-2 py-0.5 rounded border border-stone-200">
-                <code className="font-mono text-stone-900 font-bold">
+              <div className="inline-flex items-center gap-1.5 bg-white px-2 py-0.5 rounded border border-slate-200">
+                <code className="font-mono text-[#0B0F19] font-bold">
                   {showCurrentDbToken
                     ? `${company.meta_token.slice(0, 10)}...`
                     : '••••••••••••••••••••'}
                 </code>
-                <span className="text-[10px] text-stone-400">
+                <span className="text-[10px] text-slate-400 font-mono tabular-nums">
                   ({company.meta_token.length} carácteres)
                 </span>
                 <button
                   type="button"
                   onClick={() => setShowCurrentDbToken(!showCurrentDbToken)}
-                  className="text-[10px] text-indigo-600 hover:text-indigo-800 font-medium underline cursor-pointer ml-1"
+                  className="text-[10px] text-[#0369A1] hover:text-[#0B0F19] font-semibold underline cursor-pointer ml-1"
                 >
                   {showCurrentDbToken ? 'Ocultar' : 'Ver'}
                 </button>
@@ -297,27 +297,27 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
           </span>
 
           <span className="flex items-center gap-1.5">
-            <span className="text-stone-500">Motor IA:</span>
+            <span className="text-slate-500">Motor IA:</span>
             {company?.kie_apikey ? (
-              <div className="inline-flex items-center gap-1.5 bg-white px-2 py-0.5 rounded border border-stone-200">
-                <code className="font-mono text-stone-900 font-bold">
+              <div className="inline-flex items-center gap-1.5 bg-white px-2 py-0.5 rounded border border-slate-200">
+                <code className="font-mono text-[#0B0F19] font-bold">
                   {showCurrentDbKieKey
                     ? `${company.kie_apikey.slice(0, 8)}...`
                     : '••••••••••••'}
                 </code>
-                <span className="text-[10px] text-purple-700 bg-purple-50 px-1 rounded font-semibold">
+                <span className="text-[10px] text-[#0369A1] bg-[#E8F8FE] px-1.5 py-0.5 rounded font-bold">
                   Activo
                 </span>
                 <button
                   type="button"
                   onClick={() => setShowCurrentDbKieKey(!showCurrentDbKieKey)}
-                  className="text-[10px] text-indigo-600 hover:text-indigo-800 font-medium underline cursor-pointer ml-1"
+                  className="text-[10px] text-[#0369A1] hover:text-[#0B0F19] font-semibold underline cursor-pointer ml-1"
                 >
                   {showCurrentDbKieKey ? 'Ocultar' : 'Ver'}
                 </button>
               </div>
             ) : (
-              <span className="text-stone-500 bg-stone-50 px-2 py-0.5 rounded border border-stone-200 font-medium">
+              <span className="text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 font-medium">
                 Opcional / Sin clave
               </span>
             )}
@@ -331,56 +331,56 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
           className={`p-4 rounded-xl border flex flex-col gap-1 text-xs ${
             saveFeedback.type === 'success'
               ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
-              : 'bg-red-50 text-red-900 border-red-200'
+              : 'bg-rose-50 text-rose-900 border-rose-200'
           }`}
         >
           <div className="flex items-center gap-2 font-bold">
             {saveFeedback.type === 'success' ? (
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             ) : (
-              <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             )}
             <span>{saveFeedback.message}</span>
           </div>
           {saveFeedback.details && (
-            <p className="text-[11px] text-emerald-700 pl-6 font-mono">{saveFeedback.details}</p>
+            <p className="text-[11px] text-emerald-700 pl-6 font-mono tabular-nums">{saveFeedback.details}</p>
           )}
         </div>
       )}
 
       {/* Formulario Principal */}
-      <form onSubmit={(e) => handleSave(e, false)} className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs space-y-5">
+      <form onSubmit={(e) => handleSave(e, false)} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Nombre de la Empresa (SOLO LECTURA, NO EDITABLE) */}
           <div>
-            <label className="block text-xs font-bold uppercase text-stone-500 mb-1.5 flex items-center justify-between">
+            <label className="block text-xs font-bold uppercase text-slate-500 mb-1.5 flex items-center justify-between tracking-wider">
               <span className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-stone-400" />
+                <Building2 className="w-3.5 h-3.5 text-slate-400" />
                 Empresa Asignada
               </span>
-              <span className="text-[10px] font-semibold text-stone-400 flex items-center gap-1 uppercase tracking-wider">
-                <Lock className="w-3 h-3 text-stone-400" />
+              <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1 uppercase tracking-wider">
+                <Lock className="w-3 h-3 text-slate-400" />
                 No editable
               </span>
             </label>
-            <div className="w-full border border-stone-200 bg-stone-100/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-stone-800 flex items-center justify-between">
+            <div className="w-full border border-slate-200 bg-[#F4F8FB] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-[#1E293B] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-600" />
-                <span className="text-stone-900">{company?.name || 'Mi Empresa'}</span>
+                <span className="w-2 h-2 rounded-full bg-[#21B6EA]" />
+                <span className="text-[#0B0F19] font-bold">{company?.name || 'Mi Empresa'}</span>
               </div>
-              <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
                 Activa
               </span>
             </div>
-            <span className="text-[11px] text-stone-400 mt-1 block">
+            <span className="text-[11px] text-slate-400 mt-1 block">
               Tu cuenta de usuario está vinculada a esta empresa.
             </span>
           </div>
 
           {/* Meta Page ID */}
           <div>
-            <label className="block text-xs font-bold uppercase text-stone-700 mb-1.5 flex items-center gap-1.5">
-              <Facebook className="w-3.5 h-3.5 text-blue-600" />
+            <label className="block text-xs font-bold uppercase text-[#1E293B] mb-1.5 flex items-center gap-1.5 tracking-wider">
+              <Facebook className="w-3.5 h-3.5 text-[#0369A1]" />
               Meta Page ID (ID Numérico de la Fan Page)
             </label>
             <input
@@ -388,9 +388,9 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
               value={pageId}
               onChange={(e) => setPageId(e.target.value)}
               placeholder="Ej. 995284600341040"
-              className="w-full border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono font-semibold text-stone-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-stone-50/50"
+              className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono tabular-nums font-semibold text-[#0B0F19] focus:outline-none focus:ring-2 focus:ring-[#21B6EA] focus:border-[#21B6EA] bg-[#F8FAFC] focus:bg-white transition-all"
             />
-            <span className="text-[11px] text-stone-500 mt-1 block">
+            <span className="text-[11px] text-slate-500 mt-1 block">
               Número de identificación de tu página de Facebook.
             </span>
           </div>
@@ -399,16 +399,16 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
         {/* Meta Access Token (ENMASCARADO POR DEFECTO CON BOTÓN "VER TOKEN") */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="text-xs font-bold uppercase text-stone-700 flex items-center gap-1.5">
-              <Key className="w-3.5 h-3.5 text-amber-500" />
+            <label className="text-xs font-bold uppercase text-[#1E293B] flex items-center gap-1.5 tracking-wider">
+              <Key className="w-3.5 h-3.5 text-[#0369A1]" />
               Meta Access Token (Token de la Fan Page)
             </label>
             <button
               type="button"
               onClick={() => setShowToken(!showToken)}
-              className="text-xs font-semibold text-stone-600 hover:text-stone-900 px-2.5 py-1 rounded-lg border border-stone-200 bg-stone-50 hover:bg-stone-100 flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="text-xs font-semibold text-slate-600 hover:text-[#0B0F19] px-2.5 py-1 rounded-lg border border-slate-200 bg-[#F4F8FB] hover:bg-slate-100 flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              {showToken ? <EyeOff className="w-3.5 h-3.5 text-stone-500" /> : <Eye className="w-3.5 h-3.5 text-stone-500" />}
+              {showToken ? <EyeOff className="w-3.5 h-3.5 text-slate-500" /> : <Eye className="w-3.5 h-3.5 text-slate-500" />}
               <span>{showToken ? 'Ocultar token' : 'Ver token'}</span>
             </button>
           </div>
@@ -421,32 +421,32 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
               placeholder="EAA..."
               autoComplete="off"
               spellCheck={false}
-              className="w-full border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono text-stone-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-stone-50/50 pr-24"
+              className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono text-[#0B0F19] focus:outline-none focus:ring-2 focus:ring-[#21B6EA] focus:border-[#21B6EA] bg-[#F8FAFC] focus:bg-white pr-24 transition-all"
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono text-stone-400 select-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono tabular-nums text-slate-400 select-none">
               {token.trim().length > 0 ? `${token.trim().length} chars` : 'vacío'}
             </span>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-stone-500 mt-1 gap-1">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-500 mt-1 gap-1">
             <span>
               Permisos requeridos en Meta: <code>pages_read_engagement</code>, <code>pages_manage_posts</code>.
             </span>
-            <span className="text-stone-400">
+            <span className="text-slate-400">
               {showToken ? 'El token está visible' : 'El token está protegido y oculto'}
             </span>
           </div>
         </div>
 
         {/* Botón de Prueba en Vivo de Meta Graph API */}
-        <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
+        <div className="p-4 bg-[#F4F8FB] rounded-xl border border-slate-200">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h4 className="text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-indigo-600" />
+              <h4 className="text-xs font-bold text-[#0B0F19] flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#0369A1]" />
                 Validar credenciales con Meta Graph API
               </h4>
-              <p className="text-[11px] text-stone-500 mt-0.5">
+              <p className="text-[11px] text-slate-500 mt-0.5">
                 Verifica de forma inmediata que el Page ID y el Token sean correctos y tengan permisos activos.
               </p>
             </div>
@@ -455,9 +455,9 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
               type="button"
               onClick={handleTestConnection}
               disabled={isTesting || !pageId.trim() || !token.trim()}
-              className="px-4 py-2 bg-white hover:bg-stone-100 disabled:opacity-50 text-stone-800 rounded-lg text-xs font-semibold border border-stone-300 flex items-center justify-center gap-2 transition-colors shrink-0 shadow-2xs cursor-pointer"
+              className="px-4 py-2 bg-white hover:bg-[#E8F8FE] disabled:opacity-50 text-[#0B0F19] rounded-xl text-xs font-bold border border-slate-300 hover:border-[#21B6EA] flex items-center justify-center gap-2 transition-colors shrink-0 shadow-2xs cursor-pointer"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-[#0369A1] ${isTesting ? 'animate-spin' : ''}`} />
               <span>{isTesting ? 'Verificando...' : 'Probar Conexión con Meta API'}</span>
             </button>
           </div>
@@ -468,14 +468,14 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
               className={`mt-3 p-3.5 rounded-xl text-xs space-y-2 ${
                 testResult.success
                   ? 'bg-emerald-50 text-emerald-950 border border-emerald-200'
-                  : 'bg-red-50 text-red-950 border border-red-200'
+                  : 'bg-rose-50 text-rose-950 border border-rose-200'
               }`}
             >
               <div className="flex items-start gap-2.5">
                 {testResult.success ? (
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 ) : (
-                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1 space-y-1">
                   <p className="font-bold">
@@ -486,12 +486,12 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
                   {testResult.success ? (
                     <div className="text-[11px] text-emerald-800 space-y-1">
                       <p>
-                        Página: <strong className="font-semibold">{testResult.pageName}</strong> • ID:{' '}
-                        <code className="font-mono font-bold bg-emerald-100/70 px-1 py-0.5 rounded text-emerald-900">{testResult.pageId}</code>
-                        {testResult.category && ` • Categoría: ${testResult.category}`}
+                        Página: <strong className="font-semibold">{testResult.pageName}</strong> · ID:{' '}
+                        <code className="font-mono tabular-nums font-bold bg-emerald-100/70 px-1 py-0.5 rounded text-emerald-900">{testResult.pageId}</code>
+                        {testResult.category && ` · Categoría: ${testResult.category}`}
                       </p>
                       {testResult.tokenTypeNote && (
-                        <div className="bg-blue-50 text-blue-900 p-2 rounded-lg border border-blue-200 text-[11px] font-medium mt-1">
+                        <div className="bg-[#E8F8FE] text-[#0B0F19] p-2 rounded-lg border border-[#21B6EA]/30 text-[11px] font-medium mt-1">
                           {testResult.tokenTypeNote}
                         </div>
                       )}
@@ -515,13 +515,13 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
                       )}
                     </div>
                   ) : (
-                    <div className="text-[11px] text-red-800 space-y-1.5">
-                      <p className="font-mono bg-red-100/80 p-2 rounded-lg text-red-950 break-words border border-red-200/60">
+                    <div className="text-[11px] text-rose-800 space-y-1.5">
+                      <p className="font-mono bg-rose-100/80 p-2 rounded-lg text-rose-950 break-words border border-rose-200/60">
                         {testResult.errorCode ? `[Error ${testResult.errorCode}${testResult.errorSubcode ? ` / Subcódigo ${testResult.errorSubcode}` : ''}] ` : ''}
                         {testResult.error}
                       </p>
                       {testResult.suggestion && (
-                        <p className="text-stone-700 bg-white/80 p-2 rounded-lg border border-red-200/60 leading-relaxed">
+                        <p className="text-[#1E293B] bg-white/85 p-2 rounded-lg border border-rose-200/60 leading-relaxed">
                           <strong>Sugerencia de solución:</strong> {testResult.suggestion}
                         </p>
                       )}
@@ -532,7 +532,7 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
                             setPageId(testResult.detectedPageId!);
                             handleTestConnection();
                           }}
-                          className="mt-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors shadow-2xs"
+                          className="mt-1 px-3 py-1.5 bg-[#21B6EA] hover:bg-[#14A3D6] text-[#0B0F19] rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-2xs"
                         >
                           Usar Page ID detectado ({testResult.detectedPageId}) y reintentar
                         </button>
@@ -546,11 +546,11 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
         </div>
 
         {/* Botones de Acción */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-stone-100">
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-100">
           <button
             type="submit"
             disabled={isSaving}
-            className="w-full sm:w-auto px-5 py-2.5 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full sm:w-auto px-5 py-2.5 bg-[#0B0F19] hover:bg-[#1E293B] text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>{isSaving ? 'Guardando credenciales...' : 'Guardar Credenciales'}</span>
           </button>
@@ -560,7 +560,7 @@ export const CompanyConfigView: React.FC<CompanyConfigViewProps> = ({
               type="button"
               onClick={() => handleSave(undefined, true)}
               disabled={isSaving}
-              className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold disabled:opacity-50 transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#21B6EA] hover:bg-[#14A3D6] text-[#0B0F19] rounded-xl text-xs font-bold disabled:opacity-50 transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Guardar y Sincronizar Feed Ahora</span>
               <ArrowRight className="w-3.5 h-3.5" />

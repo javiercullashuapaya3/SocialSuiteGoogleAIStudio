@@ -1,77 +1,98 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../AuthContext';
-import { ShieldCheck, Sparkles, CheckCircle2, AlertCircle, Building2 } from 'lucide-react';
+import { isSupabaseConfigured } from '../supabase';
+import { ShieldCheck, AlertCircle, Lock, AlertTriangle } from 'lucide-react';
 
 export const LoginView: React.FC = () => {
-  const { handleLogin, isLoggingIn, loginError, handleSignUp, enterDemoMode } = useAuth();
-  const [showSignUp, setShowSignUp] = useState(false);
-  const [signUpEmail, setSignUpEmail] = useState('');
-  const [signUpPassword, setSignUpPassword] = useState('');
-  const [signUpName, setSignUpName] = useState('');
-  const [signUpStatus, setSignUpStatus] = useState<{ success?: boolean; message?: string } | null>(null);
-  const [isSigningUp, setIsSigningUp] = useState(false);
-
-  const onSignUpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!handleSignUp) return;
-    setIsSigningUp(true);
-    setSignUpStatus(null);
-    const res = await handleSignUp(signUpEmail, signUpPassword, signUpName);
-    setSignUpStatus(res);
-    setIsSigningUp(false);
-    if (res.success) {
-      setTimeout(() => {
-        setShowSignUp(false);
-      }, 2000);
-    }
-  };
+  const { handleLogin, isLoggingIn, loginError } = useAuth();
 
   return (
-    <div id="login-container" className="min-h-screen bg-stone-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-stone-900">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 shadow-md p-1.5 mb-3 border border-stone-200">
-          <img
-            src="/promptia_logo.png"
-            alt="Promptia.lat Logo"
-            className="w-full h-full object-contain"
-          />
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight text-stone-900">
-          Social Suite
-        </h1>
-        <p className="mt-1 text-sm text-stone-600">
-          Plataforma de Analítica Social y Sincronización con IA
-        </p>
-        <p className="text-xs text-indigo-600 font-semibold mt-0.5">
-          Creado por Promptia.lat
-        </p>
+    <div
+      id="login-container"
+      className="min-h-screen bg-[#0B0F19] bg-brand-twilight flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 text-white"
+    >
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        {/* Columna izquierda: Identidad Brand Book Promptia.lat */}
+        <div className="lg:col-span-6 text-center lg:text-left space-y-6">
+          <div className="inline-flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-[#1E293B]/90 border border-[#21B6EA]/35 p-2.5 flex items-center justify-center shadow-lg">
+              <img
+                src="/promptia_logo.png"
+                alt="Promptia.lat Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="text-left">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#21B6EA] block">
+                Promptia.lat
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                Social Suite
+              </h1>
+            </div>
+          </div>
 
-        <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          Sistema en Línea • Conexión Segura
-        </div>
-      </div>
+          <div className="space-y-3 max-w-lg mx-auto lg:mx-0">
+            <blockquote className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-snug text-balance">
+              &ldquo;Tu lógica opera sola,{' '}
+              <span className="text-[#21B6EA]">el valor se multiplica.</span>&rdquo;
+            </blockquote>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              Plataforma de analítica social y sincronización inteligente con IA. Supervisa conversaciones, detecta oportunidades comerciales y mide el sentimiento de tu audiencia en tiempo real.
+            </p>
+          </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="bg-white py-8 px-6 shadow-sm border border-stone-200 rounded-2xl sm:px-10">
-          {!showSignUp ? (
-            <form onSubmit={handleLogin} className="space-y-4 max-w-sm mx-auto p-2 sm:p-0">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-stone-900">Iniciar Sesión</h2>
-                <span className="text-xs text-stone-500 flex items-center gap-1 font-medium">
-                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" /> Acceso Seguro
+          {/* Pilares del Brand Book (sin badges tipo píldora saturados) */}
+          <div className="pt-2 border-t border-white/10 max-w-md mx-auto lg:mx-0">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+              Principios operativos
+            </p>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-1 text-xs sm:text-sm font-semibold text-slate-200">
+              <span>Innovación</span>
+              <span className="text-[#21B6EA]" aria-hidden="true">·</span>
+              <span>Productividad</span>
+              <span className="text-[#21B6EA]" aria-hidden="true">·</span>
+              <span>Seguridad</span>
+              <span className="text-[#21B6EA]" aria-hidden="true">·</span>
+              <span>Eficiencia</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Columna derecha: Tarjeta Pure White de Acceso */}
+        <div className="lg:col-span-6 w-full max-w-md mx-auto">
+          <div className="bg-white text-[#0B0F19] py-8 px-6 sm:px-9 shadow-2xl border border-slate-200/80 rounded-2xl">
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-[#0B0F19] tracking-tight">Iniciar Sesión</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Accede al panel de tu empresa</p>
+                </div>
+                <span className="text-xs text-[#0369A1] flex items-center gap-1.5 font-semibold">
+                  <ShieldCheck className="w-4 h-4 text-[#21B6EA]" /> Acceso Seguro
                 </span>
               </div>
 
+              {!isSupabaseConfigured && (
+                <div className="p-3 bg-amber-50 text-amber-900 text-xs rounded-xl border border-amber-200 flex items-start gap-2 leading-relaxed">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong>Conexión a Supabase no configurada en este entorno.</strong> Configura las variables{' '}
+                    <code className="font-mono font-semibold">VITE_SUPABASE_URL</code> y{' '}
+                    <code className="font-mono font-semibold">VITE_SUPABASE_ANON_KEY</code> para autenticar usuarios reales.
+                  </div>
+                </div>
+              )}
+
               {loginError && (
-                <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200 flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <div className="p-3 bg-rose-50 text-rose-800 text-xs sm:text-sm rounded-xl border border-rose-200 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                   <div>{loginError}</div>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-stone-600 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#1E293B] mb-1.5">
                   Correo Electrónico
                 </label>
                 <input
@@ -80,12 +101,12 @@ export const LoginView: React.FC = () => {
                   required
                   autoComplete="email"
                   placeholder="tu@empresa.com"
-                  className="w-full border border-stone-300 px-3 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                  className="w-full border border-slate-300 px-3.5 py-2.5 rounded-xl text-sm text-[#0B0F19] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#21B6EA] focus:border-[#21B6EA] bg-[#F8FAFC] transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-stone-600 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#1E293B] mb-1.5">
                   Contraseña
                 </label>
                 <input
@@ -94,7 +115,7 @@ export const LoginView: React.FC = () => {
                   required
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className="w-full border border-stone-300 px-3 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                  className="w-full border border-slate-300 px-3.5 py-2.5 rounded-xl text-sm text-[#0B0F19] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#21B6EA] focus:border-[#21B6EA] bg-[#F8FAFC] transition-colors"
                 />
               </div>
 
@@ -102,121 +123,13 @@ export const LoginView: React.FC = () => {
                 id="btn-login-submit"
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full py-2.5 px-4 bg-indigo-600 text-white rounded-lg font-semibold text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors shadow-sm cursor-pointer"
+                className="w-full py-2.5 px-4 bg-[#21B6EA] hover:bg-[#14A3D6] text-[#0B0F19] rounded-xl font-bold text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#21B6EA] disabled:opacity-50 transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
               >
-                {isLoggingIn ? 'Iniciando sesión...' : 'Ingresar'}
-              </button>
-
-              <div className="pt-2 flex items-center justify-center text-xs border-t border-stone-100">
-                <button
-                  type="button"
-                  onClick={() => setShowSignUp(true)}
-                  className="text-indigo-600 hover:text-indigo-700 font-semibold cursor-pointer"
-                >
-                  ¿No tienes usuario? Registrarse
-                </button>
-              </div>
-
-              {/* Demo Mode Quick Access */}
-              <div className="mt-4 pt-4 border-t border-stone-100">
-                <div className="p-3.5 bg-stone-50 rounded-xl border border-stone-200 text-center">
-                  <p className="text-xs text-stone-600 mb-2.5">
-                    ¿Deseas acceder directamente para explorar el portal empresarial?
-                  </p>
-                  <button
-                    id="btn-demo-mode"
-                    type="button"
-                    onClick={() => enterDemoMode && enterDemoMode(3)}
-                    className="w-full py-2 px-3 bg-stone-900 text-white hover:bg-stone-800 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    Ingresar en Modo Demostración
-                  </button>
-                </div>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={onSignUpSubmit} className="space-y-4 max-w-sm mx-auto p-2 sm:p-0">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-stone-900">Crear Cuenta</h2>
-                <button
-                  type="button"
-                  onClick={() => setShowSignUp(false)}
-                  className="text-xs text-stone-500 hover:text-stone-800 cursor-pointer"
-                >
-                  Volver a login
-                </button>
-              </div>
-
-              {signUpStatus && (
-                <div
-                  className={`p-3 text-sm rounded-lg border flex items-start gap-2 ${
-                    signUpStatus.success
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-red-50 text-red-700 border-red-200'
-                  }`}
-                >
-                  {signUpStatus.success ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                  )}
-                  <div>{signUpStatus.message}</div>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-xs font-semibold uppercase text-stone-600 mb-1">
-                  Nombre Completo
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={signUpName}
-                  onChange={(e) => setSignUpName(e.target.value)}
-                  placeholder="Ej. Ana García"
-                  className="w-full border border-stone-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase text-stone-600 mb-1">
-                  Correo Electrónico
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={signUpEmail}
-                  onChange={(e) => setSignUpEmail(e.target.value)}
-                  placeholder="ana@empresa.com"
-                  className="w-full border border-stone-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase text-stone-600 mb-1">
-                  Contraseña (mínimo 6 caracteres)
-                </label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={signUpPassword}
-                  onChange={(e) => setSignUpPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full border border-stone-300 px-3 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 bg-white"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSigningUp}
-                className="w-full py-2.5 px-4 bg-emerald-600 text-white rounded-lg font-semibold text-sm hover:bg-emerald-700 disabled:opacity-50 transition-colors shadow-sm cursor-pointer"
-              >
-                {isSigningUp ? 'Creando cuenta...' : 'Crear Cuenta'}
+                <Lock className="w-4 h-4" />
+                <span>{isLoggingIn ? 'Iniciando sesión...' : 'Ingresar'}</span>
               </button>
             </form>
-          )}
+          </div>
         </div>
       </div>
     </div>
